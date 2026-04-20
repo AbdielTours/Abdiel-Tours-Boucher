@@ -114,49 +114,49 @@ export default function PrintView() {
               <tbody>
 
                 <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Huésped:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.guestName}
-                  </td>
-                </tr>
+  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
+    Estadía:
+  </th>
+  <td className="py-2 font-bold text-black text-base">
+    {voucher.stayDates}
+  </td>
+</tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Destino:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base uppercase">
-                    {voucher.destination}
-                  </td>
-                </tr>
+<tr className="border-b border-gray-100">
+  <th className="py-2 text-voucher-blue font-bold uppercase">
+    Localizador:
+  </th>
+  <td className="py-2 font-bold text-black">
+    {voucher.locator || "N/A"}
+  </td>
+</tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    País:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base uppercase">
-                    {voucher.country}
-                  </td>
-                </tr>
+<tr className="border-b border-gray-100">
+  <th className="py-2 text-voucher-blue font-bold uppercase">
+    Teléfono:
+  </th>
+  <td className="py-2 font-bold text-black">
+    {voucher.phone || "N/A"}
+  </td>
+</tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Cantidad Huésped:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.guestCount}
-                  </td>
-                </tr>
+<tr className="border-b border-gray-100">
+  <th className="py-2 text-voucher-blue font-bold uppercase">
+    Plan:
+  </th>
+  <td className="py-2 font-bold text-black uppercase">
+    {voucher.plan || "N/A"}
+  </td>
+</tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Estadía:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.stayDates}
-                  </td>
-                </tr>
+<tr className="border-b border-gray-100">
+  <th className="py-2 text-voucher-blue font-bold uppercase">
+    Categoría:
+  </th>
+  <td className="py-2 font-bold text-black uppercase">
+    {voucher.category || "N/A"}
+  </td>
+</tr>
 
               </tbody>
             </table>
