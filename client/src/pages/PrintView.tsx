@@ -112,12 +112,12 @@ export default function PrintView() {
 
             <tr className="border-b">
               <th className="py-2 text-blue-700 font-bold">Localizador:</th>
-              <td className="py-2">{voucher.locator || "N/A"}</td>
+              <td className="py-2">{voucher.localizador || "N/A"}</td>
             </tr>
 
             <tr className="border-b">
               <th className="py-2 text-blue-700 font-bold">Teléfono:</th>
-              <td className="py-2">{voucher.phone || "N/A"}</td>
+              <td className="py-2">{voucher.Telefono || "N/A"}</td>
             </tr>
 
             <tr className="border-b">
@@ -127,7 +127,7 @@ export default function PrintView() {
 
             <tr className="border-b">
               <th className="py-2 text-blue-700 font-bold">Categoría:</th>
-              <td className="py-2">{voucher.category || "N/A"}</td>
+              <td className="py-2">{voucher.categoria || "N/A"}</td>
             </tr>
 
           </tbody>

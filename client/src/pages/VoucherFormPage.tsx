@@ -94,10 +94,10 @@ export default function VoucherFormPage() {
         // 🔥 FIX CLAVE (MULTINOMBRES)
         guestName: data.guestNames.map(g => g.name).join(", "),
 
-        locator: data.locator || "",
-        phone: data.phone || "",
+        localizador: data.locator || "",
+        telefono: data.phone || "",
         plan: data.plan || "",
-        category: data.category || "",
+        categoria: data.category || "",
 
         stayDates: stayDatesFormatted,
 
