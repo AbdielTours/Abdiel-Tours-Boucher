@@ -115,6 +115,29 @@ export default function VoucherFormPage() {
       })),
     };
 
+    const onSubmit = async (data: FormValues) => {
+  try {
+    const stayDatesFormatted =
+      type === "nacional"
+        ? formatFechas(data.checkIn, data.checkOut)
+        : data.stayDates;
+
+    const payload = {
+      ...data,
+
+      locator: data.locator || "",
+      phone: data.phone || "",
+      plan: data.plan || "",
+      category: data.category || "",
+
+      stayDates: stayDatesFormatted,
+
+      services: data.services.map((s) => ({
+        title: s.title,
+        items: s.items.map((i) => i.value),
+      })),
+    };
+
     const created = await createMutation.mutateAsync(payload);
 
     queryClient.invalidateQueries({ queryKey: ["vouchers"] });
