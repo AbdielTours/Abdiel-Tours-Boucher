@@ -48,170 +48,180 @@ export default function PrintView() {
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
     };
 
+    // @ts-ignore
     html2pdf().set(opt).from(element).save();
   };
 
   return (
     <div className="min-h-screen bg-muted/20 sm:py-8 font-sans print:bg-white print:py-0">
 
-      {/* Controles */}
+      {/* CONTROLES */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 no-print">
-        <div className="bg-card p-4 rounded-2xl shadow-sm border border-border flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
-          >
+        <div className="bg-card p-4 rounded-2xl shadow-sm border flex items-center justify-between">
+          <Link href="/" className="flex items-center">
             <ArrowLeft className="w-5 h-5 mr-2" />
             Volver
           </Link>
 
           <div className="flex gap-3">
-
             <button
               onClick={handlePrint}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-blue-600 text-white px-5 py-2 rounded-xl flex items-center gap-2"
             >
-              <Printer className="w-5 h-5" />
+              <Printer className="w-4 h-4" />
               Imprimir
             </button>
 
             <button
               onClick={handleDownloadPDF}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold bg-blue-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-blue-700 text-white px-5 py-2 rounded-xl"
             >
               Descargar PDF
             </button>
-
           </div>
         </div>
       </div>
 
-      {/* Documento */}
-      <div className="max-w-4xl mx-auto bg-white sm:rounded-none sm:shadow-2xl print-container overflow-hidden">
-        <div className="p-8 sm:p-12 lg:p-16">
+      {/* DOCUMENTO */}
+      <div className="max-w-4xl mx-auto bg-white print-container">
+        <div className="p-10">
 
-          {/* Logo */}
-          <div className="flex flex-col items-center justify-center mb-10 border-b-2 border-voucher-blue pb-8">
-            <div className="text-center mb-6">
-              <img
-                src={logoImage}
-                alt="Tours Abdiel Travel Logo"
-                className="mx-auto h-32 w-auto object-contain mb-4"
-              />
-              <p className="text-xs font-medium mt-1 text-gray-600 tracking-widest uppercase">
-                Agencia de Viajes y Turismo
-              </p>
-            </div>
+          {/* LOGO */}
+          <div className="text-center mb-8 border-b pb-6">
+            <img src={logoImage} className="mx-auto h-28 mb-2" />
+            <p className="text-xs uppercase text-gray-500 tracking-widest">
+              Agencia de Viajes y Turismo
+            </p>
 
-            <h2 className="text-2xl md:text-3xl font-bold text-voucher-blue mt-4 uppercase">
-              VOUCHER {voucher.destination}
+            <h2 className="text-2xl font-bold text-voucher-blue mt-4 uppercase">
+              CUPÓN {voucher.destination}
             </h2>
           </div>
 
-          {/* Datos */}
-          <div className="mb-12">
-            <table className="w-full text-left border-collapse">
-              <tbody>
+          {/* DATOS */}
+          <table className="w-full border-collapse mb-10">
+            <tbody>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Huésped:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.guestName}
-                  </td>
-                </tr>
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase w-1/3">
+                  Huésped:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.guestName}
+                </td>
+              </tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Destino:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base uppercase">
-                    {voucher.destination}
-                  </td>
-                </tr>
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Destino:
+                </th>
+                <td className="py-2 font-bold uppercase">
+                  {voucher.destination}
+                </td>
+              </tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    País:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base uppercase">
-                    {voucher.country}
-                  </td>
-                </tr>
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  País:
+                </th>
+                <td className="py-2 font-bold uppercase">
+                  {voucher.country}
+                </td>
+              </tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Cantidad Huésped:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.guestCount}
-                  </td>
-                </tr>
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Cantidad:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.guestCount}
+                </td>
+              </tr>
 
-                <tr className="border-b border-gray-100">
-                  <th className="py-2 w-1/3 text-voucher-blue font-bold text-base uppercase tracking-wide">
-                    Estadía:
-                  </th>
-                  <td className="py-2 font-bold text-black text-base">
-                    {voucher.stayDates}
-                  </td>
-                </tr>
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Estadía:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.stayDates}
+                </td>
+              </tr>
 
-              </tbody>
-            </table>
-          </div>
+              {/* 🔥 CAMPOS NUEVOS */}
 
-          {/* Servicios */}
-          <div className="mt-6">
-            <h3 className="text-xl font-bold text-voucher-blue mb-4 underline decoration-2 underline-offset-4">
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Localizador:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.locator || "N/A"}
+                </td>
+              </tr>
+
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Teléfono:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.phone || "N/A"}
+                </td>
+              </tr>
+
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Plan:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.plan || "N/A"}
+                </td>
+              </tr>
+
+              <tr className="border-b">
+                <th className="py-2 text-voucher-blue font-bold uppercase">
+                  Categoría:
+                </th>
+                <td className="py-2 font-bold">
+                  {voucher.category || "N/A"}
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          {/* SERVICIOS */}
+          <div>
+            <h3 className="text-lg font-bold text-voucher-blue mb-3 underline">
               Que incluye nuestros Servicios:
             </h3>
 
-            <div className="space-y-4 pl-2">
-              {voucher.services.map((service, idx) => (
-                <div key={idx} className="space-y-2">
-                  <h4 className="text-base font-bold text-voucher-blue uppercase">
-                    {service.title}
-                  </h4>
+            {voucher.services.map((service, i) => (
+              <div key={i} className="mb-4">
+                <h4 className="font-bold text-voucher-blue uppercase">
+                  {service.title}
+                </h4>
 
-                  <ul className="list-disc list-inside space-y-1 pl-4">
-                    {service.items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-black font-medium text-sm leading-relaxed">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+                <ul className="list-disc pl-6">
+                  {service.items.map((item, j) => (
+                    <li key={j}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
 
-          {/* Aviso */}
-          <div className="mt-12 text-center border-t pt-6">
-            <div className="text-red-600 font-semibold text-sm mb-2">
+          {/* FOOTER */}
+          <div className="mt-10 text-center text-sm">
+            <p className="text-red-600 font-semibold">
               Encargada: Antonia De los Santos | Contacto: (829) 629-6480
-            </div>
-
-            <p className="text-red-500 font-bold text-sm uppercase mb-2">
-              Gracias por elegir Abdieltours. Les deseamos una estadía llena de momentos felices.
             </p>
 
-            <div className="border border-black p-2 text-xs font-medium">
-              UN DOCUMENTO DE IDENTIFICACION
-              <span className="bg-cyan-300 font-bold px-1 ml-1">
-                (Cedula o Pasaporte)
-              </span>
-              es imprescindible para que los adultos puedan hacer
-              <span className="bg-cyan-300 font-bold px-1 ml-1">
-                CHECK IN
-              </span>
-            </div>
-          </div>
+            <p className="text-red-500 font-bold mt-2">
+              GRACIAS POR ELEGIR ABDIELTOURS
+            </p>
 
-          {/* Footer */}
-          <div className="mt-24 text-center text-sm font-medium text-gray-400 print-only">
-            Generado por el Sistema de Vouchers - {new Date().toLocaleDateString()}
+            <div className="border mt-3 p-2 text-xs">
+              Documento requerido: <b>Cédula o Pasaporte</b>
+            </div>
           </div>
 
         </div>

@@ -89,23 +89,28 @@ export default function VoucherFormPage() {
           : data.stayDates;
 
       const payload = {
-        ...data,
+  guestName: data.guestNames.map(g => g.name).join(", "), // 🔥 importante
 
-        // 🔥 FIX CLAVE (MULTINOMBRES)
-        guestName: data.guestNames.map(g => g.name).join(", "),
+  destination: data.destination,
+  country: data.country,
+  guestCount: data.guestCount,
 
-        localizador: data.locator || "",
-        telefono: data.phone || "",
-        plan: data.plan || "",
-        categoria: data.category || "",
+  stayDates:
+    type === "nacional"
+      ? formatFechas(data.checkIn, data.checkOut)
+      : data.stayDates,
 
-        stayDates: stayDatesFormatted,
+  // 🔥 ESTOS SOLO SI EXISTEN EN TU SISTEMA
+  locator: data.locator || "",
+  phone: data.phone || "",
+  plan: data.plan || "",
+  category: data.category || "",
 
-        services: data.services.map((s) => ({
-          title: s.title,
-          items: s.items.map((i) => i.value),
-        })),
-      };
+  services: data.services.map((s) => ({
+    title: s.title,
+    items: s.items.map((i) => i.value),
+  })),
+};
 
       const created = await createMutation.mutateAsync(payload);
 
