@@ -92,20 +92,41 @@ export default function VoucherFormPage() {
           ? formatFechas(data.checkIn, data.checkOut)
           : data.stayDates;
 
-      const payload = {
-  ...data,
+      const onSubmit = async (data: FormValues) => {
+  try {
+    const stayDatesFormatted =
+      type === "nacional"
+        ? `${data.checkIn || ""} - ${data.checkOut || ""}`
+        : data.stayDates;
 
-  locator: data.locator,
-  phone: data.phone,
-  plan: data.plan,
-  category: data.category,
+    const payload = {
+      ...data,
 
-  stayDates: stayDatesFormatted,
+      locator: data.locator || "",
+      phone: data.phone || "",
+      plan: data.plan || "",
+      category: data.category || "",
 
-  services: data.services.map(s => ({
-    title: s.title,
-    items: s.items.map(i => i.value)
-  }))
+      stayDates: stayDatesFormatted,
+
+      services: data.services.map((s) => ({
+        title: s.title,
+        items: s.items.map((i) => i.value),
+      })),
+    };
+
+    const created = await createMutation.mutateAsync(payload);
+
+    queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+
+    window.location.href = `/vouchers/${created.id}`;
+  } catch (error) {
+    console.error(error);
+    toast({
+      title: "Error al guardar",
+      variant: "destructive",
+    });
+  }
 };
 
       const created = await createMutation.mutateAsync(payload);
