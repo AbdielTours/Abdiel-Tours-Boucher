@@ -2,13 +2,13 @@ import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
-import { z } from "zod";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
 
+  // GET ALL
   app.get(api.vouchers.list.path, async (req, res) => {
     try {
       const vouchers = await storage.getVouchers();
@@ -19,6 +19,7 @@ export async function registerRoutes(
     }
   });
 
+  // GET ONE
   app.get(api.vouchers.get.path, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -36,57 +37,96 @@ export async function registerRoutes(
     }
   });
 
+  // CREATE (🔥 FIX AQUI)
   app.post(api.vouchers.create.path, async (req, res) => {
     try {
-      const input = api.vouchers.create.input.parse(req.body);
-      const voucher = await storage.createVoucher(input);
+      const data = req.body;
+
+      const payload = {
+        guestName: data.guestName || "",
+        guestNames: data.guestNames || [],
+
+        destination: data.destination || "",
+        country: data.country || "",
+
+        guestCount: Number(data.guestCount) || 1,
+
+        stayDates: data.stayDates || "",
+
+        checkIn: data.checkIn || "",
+        checkOut: data.checkOut || "",
+
+        locator: data.locator || "",
+        phone: data.phone || "",
+        plan: data.plan || "",
+        category: data.category || "",
+
+        services: data.services || [],
+      };
+
+      const voucher = await storage.createVoucher(payload);
+
       res.status(201).json(voucher);
     } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
-      }
       console.error("Error creating voucher:", err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Error creating voucher" });
     }
   });
 
+  // UPDATE (🔥 TAMBIEN FIX)
   app.put(api.vouchers.update.path, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID" });
       }
-      
+
       const existing = await storage.getVoucher(id);
       if (!existing) {
         return res.status(404).json({ message: "Voucher not found" });
       }
 
-      const input = api.vouchers.update.input.parse(req.body);
-      const voucher = await storage.updateVoucher(id, input);
+      const data = req.body;
+
+      const payload = {
+        guestName: data.guestName || "",
+        guestNames: data.guestNames || [],
+
+        destination: data.destination || "",
+        country: data.country || "",
+
+        guestCount: Number(data.guestCount) || 1,
+
+        stayDates: data.stayDates || "",
+
+        checkIn: data.checkIn || "",
+        checkOut: data.checkOut || "",
+
+        locator: data.locator || "",
+        phone: data.phone || "",
+        plan: data.plan || "",
+        category: data.category || "",
+
+        services: data.services || [],
+      };
+
+      const voucher = await storage.updateVoucher(id, payload);
+
       res.json(voucher);
     } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
-      }
       console.error("Error updating voucher:", err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Error updating voucher" });
     }
   });
 
+  // DELETE
   app.delete(api.vouchers.delete.path, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID" });
       }
-      
+
       const existing = await storage.getVoucher(id);
       if (!existing) {
         return res.status(404).json({ message: "Voucher not found" });
@@ -100,12 +140,12 @@ export async function registerRoutes(
     }
   });
 
-  // Seed database if empty
   setTimeout(seedDatabase, 1000);
 
   return httpServer;
 }
 
+// SEED
 async function seedDatabase() {
   try {
     const existing = await storage.getVouchers();
@@ -116,39 +156,13 @@ async function seedDatabase() {
         country: "COLOMBIA",
         guestCount: 2,
         stayDates: "DEL 17 AL 21 MARZO",
-        services: [
-          {
-            title: "1- TRASLADO AEROPUERTO HOTEL- IDA Y REGRESO",
-            items: []
-          },
-          {
-            title: "2- FIESTA ENCHIVA RUMBERA (1 NOCHE) TOURS NOCTURNO",
-            items: [
-              "RECORRIDO POR LA CARRERA 70",
-              "PARQUE DEL POBLADO",
-              "PARQUE LLERAS",
-              "MIRADOR DE LAS PALMAS",
-              "GUIA ACOMPANANTE",
-              "ASISTENCIA MEDICA",
-              "TRASPORTE",
-              "DURACION 4 HORAS",
-              "SALIDA DE LA CARRERA 70: HORA 7PM"
-            ]
-          },
-          {
-            title: "3- City tour más comuna 13",
-            items: [
-              "Transporte ida y regreso",
-              "Plaza Botero",
-              "Parque de los pies descalzos",
-              "Pueblito paisa (cerro Nutibara).",
-              "Transporte en Metro y Metrocable.",
-              "Recorrido escaleras eléctricas comuna 13."
-            ]
-          }
-        ]
+        locator: "",
+        phone: "",
+        plan: "",
+        category: "",
+        services: [],
       });
-      console.log("Database seeded with sample voucher");
+      console.log("Database seeded");
     }
   } catch (err) {
     console.error("Error seeding database:", err);
