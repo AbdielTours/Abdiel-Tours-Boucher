@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRoute, useLocation, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,19 +16,18 @@ import {
   Loader2
 } from "lucide-react";
 
-// Local form schema to handle nested arrays easily with react-hook-form
 const formSchema = z.object({
-  guestName: z.string().min(2, "El nombre es requerido"),
-  destination: z.string().min(2, "El destino es requerido"),
-  country: z.string().min(2, "El país es requerido"),
-  guestCount: z.coerce.number().min(1, "Debe ser al menos 1 huésped"),
-  stayDates: z.string().min(2, "Las fechas son requeridas"),
+  guestName: z.string().min(2),
+  destination: z.string().min(2),
+  country: z.string().min(2),
+  guestCount: z.coerce.number().min(1),
+  stayDates: z.string().min(2),
   services: z.array(z.object({
-    title: z.string().min(1, "El título del servicio es requerido"),
+    title: z.string(),
     items: z.array(z.object({
-      value: z.string().min(1, "El item no puede estar vacío")
-    })).min(1, "Agrega al menos un detalle al servicio")
-  })).min(1, "Agrega al menos un bloque de servicios")
+      value: z.string()
+    }))
+  }))
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -40,10 +39,10 @@ export default function VoucherFormPage() {
   const isEdit = !!params?.id;
   const voucherId = isEdit ? parseInt(params.id) : null;
   
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
 
-  // 🔥 DETECTAR TIPO (NUEVO)
-  const type = new URLSearchParams(window.location.search).get("type");
+  // ✅ TYPE SEGURO (NO ROMPE RENDER)
+  const [type, setType] = useState<string | null>(null);
 
   const { toast } = useToast();
   
@@ -59,20 +58,12 @@ export default function VoucherFormPage() {
       country: "",
       guestCount: 1,
       stayDates: "",
-      // 🔥 AQUÍ ESTÁ LA DIFERENCIA
-      services: type === "nacional"
-        ? [
-            {
-              title: "1- HOTEL",
-              items: [{ value: "Alojamiento incluido" }]
-            }
-          ]
-        : [
-            {
-              title: "1- TRASLADOS",
-              items: [{ value: "" }]
-            }
-          ]
+      services: [
+        {
+          title: "1- TRASLADOS",
+          items: [{ value: "" }]
+        }
+      ]
     }
   });
 
@@ -80,6 +71,28 @@ export default function VoucherFormPage() {
     control: form.control,
     name: "services"
   });
+
+  // 🔥 Detectar tipo seguro
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const t = new URLSearchParams(window.location.search).get("type");
+      setType(t);
+    }
+  }, []);
+
+  // 🔥 Aplicar cambios según tipo
+  useEffect(() => {
+    if (!type) return;
+
+    if (type === "nacional") {
+      form.setValue("services", [
+        {
+          title: "1- HOTEL",
+          items: [{ value: "Alojamiento incluido" }]
+        }
+      ]);
+    }
+  }, [type]);
 
   useEffect(() => {
     if (voucher && isEdit) {
@@ -95,16 +108,12 @@ export default function VoucherFormPage() {
         }))
       });
     }
-  }, [voucher, isEdit, form]);
+  }, [voucher, isEdit]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       const payload = {
-        guestName: data.guestName,
-        destination: data.destination,
-        country: data.country,
-        guestCount: data.guestCount,
-        stayDates: data.stayDates,
+        ...data,
         services: data.services.map(s => ({
           title: s.title,
           items: s.items.map(i => i.value)
@@ -113,47 +122,47 @@ export default function VoucherFormPage() {
 
       if (isEdit && voucherId) {
         await updateMutation.mutateAsync({ id: voucherId, ...payload });
-        toast({ title: "Voucher actualizado con éxito" });
+        toast({ title: "Actualizado" });
       } else {
         const created = await createMutation.mutateAsync(payload);
-
         queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-
         window.location.href = `/vouchers/${created.id}`;
         return;
       }
 
       setLocation("/");
-    } catch (error) {
-      toast({
-        title: "Error al guardar",
-        description: error instanceof Error ? error.message : "Error desconocido",
-        variant: "destructive"
-      });
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
     }
   };
-
-  const isPending = createMutation.isPending || updateMutation.isPending;
 
   if (isEdit && isLoadingVoucher) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <Loader2 className="w-10 h-10 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 pb-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-primary mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver al Dashboard
-        </Link>
+    <div className="min-h-screen p-6">
+      <PageHeader title="Crear Voucher" description={`Tipo: ${type || "internacional"}`} />
 
-        <PageHeader 
-          title={isEdit ? "Editar Voucher" : "Crear Nuevo Voucher"} 
-          description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <input {...form.register("guestName")} placeholder="Nombre" />
+        <input {...form.register("destination")} placeholder="Destino" />
+        <input {...form.register("country")} placeholder="País" />
+
+        {serviceFields.map((field, index) => (
+          <div key={field.id}>
+            <input {...form.register(`services.${index}.title`)} />
+          </div>
+        ))}
+
+        <button type="submit">Guardar</button>
+
+      </form>
+    </div>
+  );
+}
