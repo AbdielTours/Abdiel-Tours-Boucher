@@ -10,17 +10,22 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
   Trash2,
-  Loader2
+  Loader2,
+  PlusCircle
 } from "lucide-react";
 
 const formSchema = z.object({
-  guestName: z.string().min(2),
-  destination: z.string().min(2),
-  country: z.string().min(2),
-  guestCount: z.coerce.number().min(1),
+  guestNames: z.array(z.object({ name: z.string() })),
+  destination: z.string(),
+  country: z.string(),
+  guestCount: z.coerce.number(),
   stayDates: z.string().optional(),
   checkIn: z.string().optional(),
   checkOut: z.string().optional(),
+  locator: z.string().optional(),
+  phone: z.string().optional(),
+  plan: z.string().optional(),
+  category: z.string().optional(),
   services: z.array(z.object({
     title: z.string(),
     items: z.array(z.object({
@@ -55,15 +60,24 @@ export default function VoucherFormPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      guestName: "",
+      guestNames: [{ name: "" }],
       destination: "",
       country: "",
       guestCount: 1,
       stayDates: "",
       checkIn: "",
       checkOut: "",
+      locator: "",
+      phone: "",
+      plan: "",
+      category: "",
       services: [{ title: "1- TRASLADOS", items: [{ value: "" }] }]
     }
+  });
+
+  const { fields: guestFields, append: addGuest, remove: removeGuest } = useFieldArray({
+    control: form.control,
+    name: "guestNames"
   });
 
   const { fields: serviceFields, append: appendService, remove: removeService } = useFieldArray({
@@ -71,151 +85,125 @@ export default function VoucherFormPage() {
     name: "services"
   });
 
-  useEffect(() => {
-    if (type === "nacional") {
-      form.setValue("services", [
-        {
-          title: "1- HOTEL",
-          items: [{ value: "Alojamiento incluido" }]
-        }
-      ]);
-    }
-  }, [type]);
-
-  useEffect(() => {
-    if (voucher && isEdit) {
-      form.reset({
-        guestName: voucher.guestName,
-        destination: voucher.destination,
-        country: voucher.country,
-        guestCount: voucher.guestCount,
-        stayDates: voucher.stayDates,
-        checkIn: "",
-        checkOut: "",
-        services: voucher.services.map((s: any) => ({
-          title: s.title,
-          items: s.items.map((item: string) => ({ value: item }))
-        }))
-      });
-    }
-  }, [voucher]);
-
   const onSubmit = async (data: FormValues) => {
     try {
+      const stayDatesFormatted =
+        type === "nacional"
+          ? formatFechas(data.checkIn, data.checkOut)
+          : data.stayDates;
+
       const payload = {
         ...data,
-        stayDates:
-          type === "nacional"
-            ? `Del ${data.checkIn} al ${data.checkOut}`
-            : data.stayDates,
+        guestName: data.guestNames.map(g => g.name).join(", "),
+        stayDates: stayDatesFormatted,
         services: data.services.map(s => ({
           title: s.title,
           items: s.items.map(i => i.value)
         }))
       };
 
-      if (isEdit && voucherId) {
-        await updateMutation.mutateAsync({ id: voucherId, ...payload });
-        toast({ title: "Voucher actualizado" });
-      } else {
-        const created = await createMutation.mutateAsync(payload);
-        queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-        window.location.href = `/vouchers/${created.id}`;
-        return;
-      }
-
-      setLocation("/");
+      const created = await createMutation.mutateAsync(payload);
+      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      window.location.href = `/vouchers/${created.id}`;
     } catch {
-      toast({ title: "Error al guardar", variant: "destructive" });
+      toast({ title: "Error", variant: "destructive" });
     }
   };
 
-  const isPending = createMutation.isPending || updateMutation.isPending;
-
-  if (isEdit && isLoadingVoucher) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-muted/30 pb-12">
-      <div className="max-w-4xl mx-auto px-4 pt-8">
+    <div className="max-w-4xl mx-auto p-6">
 
-        <Link href="/" className="inline-flex items-center mb-6">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver
-        </Link>
+      <Link href="/" className="flex items-center mb-6">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Volver
+      </Link>
 
-        <PageHeader
-          title={isEdit ? "Editar Voucher" : "Crear Nuevo Voucher"}
-          description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
-        />
+      <PageHeader title="Nuevo Voucher" description={`Tipo: ${type}`} />
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-          <div className="bg-card rounded-2xl p-6 border">
-            <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
+        {/* NOMBRES */}
+        <div>
+          <h3 className="font-semibold mb-2">Huéspedes</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              <div className="md:col-span-2">
-                <input {...form.register("guestName")} placeholder="Nombre del huésped" className="p-3 border rounded-xl w-full"/>
-              </div>
-
-              {type === "nacional" ? (
-                <>
-                  <input {...form.register("destination")} placeholder="Hotel" className="p-3 border rounded-xl"/>
-                  <input {...form.register("country")} placeholder="Ciudad" className="p-3 border rounded-xl"/>
-                  <input type="number" {...form.register("guestCount")} placeholder="Cantidad" className="p-3 border rounded-xl"/>
-
-                  <input type="date" {...form.register("checkIn")} className="p-3 border rounded-xl"/>
-                  <input type="date" {...form.register("checkOut")} className="p-3 border rounded-xl"/>
-                </>
-              ) : (
-                <>
-                  <input {...form.register("destination")} placeholder="Destino" className="p-3 border rounded-xl"/>
-                  <input {...form.register("country")} placeholder="País" className="p-3 border rounded-xl"/>
-                  <input type="number" {...form.register("guestCount")} placeholder="Cantidad" className="p-3 border rounded-xl"/>
-                  <input {...form.register("stayDates")} placeholder="Fechas" className="p-3 border rounded-xl"/>
-                </>
-              )}
-
+          {guestFields.map((field, i) => (
+            <div key={field.id} className="flex gap-2 mb-2">
+              <input
+                {...form.register(`guestNames.${i}.name`)}
+                placeholder={`Nombre ${i + 1}`}
+                className="flex-1 p-2 border rounded"
+              />
+              <button type="button" onClick={() => removeGuest(i)}>
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </button>
             </div>
-          </div>
+          ))}
 
-          <div className="bg-card rounded-2xl p-6 border">
-            <h2 className="text-xl font-semibold mb-6">Servicios Incluidos</h2>
+          <button type="button" onClick={() => addGuest({ name: "" })}>
+            <PlusCircle className="w-4 h-4 inline mr-1" />
+            Agregar nombre
+          </button>
+        </div>
 
-            {serviceFields.map((field, index) => (
-              <div key={field.id} className="mb-4 p-4 border rounded-xl">
-                <input {...form.register(`services.${index}.title`)} className="w-full p-2 border rounded mb-2"/>
+        {/* INFO EXTRA */}
+        <div className="grid grid-cols-2 gap-4">
+          <input {...form.register("locator")} placeholder="Localizador" className="p-2 border rounded"/>
+          <input {...form.register("phone")} placeholder="Teléfono" className="p-2 border rounded"/>
+          <input {...form.register("plan")} placeholder="Plan" className="p-2 border rounded"/>
+          <input {...form.register("category")} placeholder="Categoría" className="p-2 border rounded"/>
+        </div>
 
-                <ServiceItems control={form.control} register={form.register} serviceIndex={index} />
+        {/* DESTINO */}
+        <div className="grid grid-cols-2 gap-4">
+          <input {...form.register("destination")} placeholder="Destino / Hotel" className="p-2 border rounded"/>
+          <input {...form.register("country")} placeholder="País / Ciudad" className="p-2 border rounded"/>
+          <input type="number" {...form.register("guestCount")} className="p-2 border rounded"/>
 
-                <button type="button" onClick={() => removeService(index)} className="text-red-500 mt-2">
-                  Eliminar
-                </button>
-              </div>
-            ))}
+          {type === "nacional" ? (
+            <>
+              <input type="date" {...form.register("checkIn")} className="p-2 border rounded"/>
+              <input type="date" {...form.register("checkOut")} className="p-2 border rounded"/>
+            </>
+          ) : (
+            <input {...form.register("stayDates")} placeholder="Fechas" className="p-2 border rounded"/>
+          )}
+        </div>
 
-            <button type="button" onClick={() => appendService({ title: "", items: [{ value: "" }] })} className="text-blue-600">
-              + Agregar servicio
-            </button>
-          </div>
+        {/* SERVICIOS */}
+        <div>
+          <h3 className="font-semibold mb-2">Servicios</h3>
 
-          <div className="flex justify-end">
-            <button type="submit" className="bg-blue-600 text-white px-6 py-3 rounded-xl">
-              {isPending ? "Guardando..." : isEdit ? "Guardar Cambios" : "Crear Voucher"}
-            </button>
-          </div>
+          {serviceFields.map((field, index) => (
+            <div key={field.id} className="mb-3">
+              <input {...form.register(`services.${index}.title`)} className="w-full p-2 border mb-2"/>
 
-        </form>
-      </div>
+              <ServiceItems control={form.control} register={form.register} serviceIndex={index}/>
+            </div>
+          ))}
+
+          <button type="button" onClick={() => appendService({ title: "", items: [{ value: "" }] })}>
+            + Servicio
+          </button>
+        </div>
+
+        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+          Crear Voucher
+        </button>
+
+      </form>
     </div>
   );
+}
+
+function formatFechas(checkIn?: string, checkOut?: string) {
+  if (!checkIn || !checkOut) return "";
+
+  const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+  const entrada = new Date(checkIn);
+  const salida = new Date(checkOut);
+
+  return `Del ${entrada.getDate()} al ${salida.getDate()} de ${meses[entrada.getMonth()]} ${entrada.getFullYear()}`;
 }
 
 function ServiceItems({ control, register, serviceIndex }: any) {
@@ -228,14 +216,14 @@ function ServiceItems({ control, register, serviceIndex }: any) {
     <div>
       {fields.map((item, i) => (
         <div key={item.id} className="flex gap-2 mb-2">
-          <input {...register(`services.${serviceIndex}.items.${i}.value`)} className="flex-1 p-2 border rounded"/>
+          <input {...register(`services.${serviceIndex}.items.${i}.value`)} className="flex-1 p-2 border"/>
           <button type="button" onClick={() => remove(i)}>
-            <Trash2 className="w-4 h-4 text-red-500" />
+            <Trash2 className="w-4 h-4 text-red-500"/>
           </button>
         </div>
       ))}
-      <button type="button" onClick={() => append({ value: "" })} className="text-blue-600 text-sm">
-        + Agregar item
+      <button type="button" onClick={() => append({ value: "" })}>
+        + Item
       </button>
     </div>
   );
