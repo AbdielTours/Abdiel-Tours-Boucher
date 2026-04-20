@@ -92,10 +92,10 @@ export default function PrintView() {
 
             {/* 🔥 ARREGLADO AQUÍ */}
 
-            <tr><td className="font-bold text-blue-700">Localizador:</td><td>{voucher.locator || "N/A"}</td></tr>
-            <tr><td className="font-bold text-blue-700">Teléfono:</td><td>{voucher.phone || "N/A"}</td></tr>
-            <tr><td className="font-bold text-blue-700">Plan:</td><td>{voucher.plan || "N/A"}</td></tr>
-            <tr><td className="font-bold text-blue-700">Categoría:</td><td>{voucher.category || "N/A"}</td></tr>
+            <tr><td className="font-bold text-blue-700">Localizador:</td><td>{voucher.locator || ""}</td></tr>
+            <tr><td className="font-bold text-blue-700">Teléfono:</td><td>{voucher.phone || ""}</td></tr>
+            <tr><td className="font-bold text-blue-700">Plan:</td><td>{voucher.plan || ""}</td></tr>
+            <tr><td className="font-bold text-blue-700">Categoría:</td><td>{voucher.category || ""}</td></tr>
 
           </tbody>
         </table>
