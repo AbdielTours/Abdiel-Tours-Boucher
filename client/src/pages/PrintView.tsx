@@ -2,7 +2,6 @@ import { useRoute, Link } from "wouter";
 import { useVoucher } from "@/hooks/use-vouchers";
 import { Printer, ArrowLeft, Loader2 } from "lucide-react";
 import logoImage from "@assets/logo_2024_1772634687195.png";
-import html2pdf from "html2pdf.js";
 
 export default function PrintView() {
   const [, params] = useRoute("/vouchers/:id");
@@ -44,17 +43,20 @@ export default function PrintView() {
   };
 
   const handleDownloadPDF = () => {
-    const element = document.querySelector(".print-container");
+  const element = document.querySelector(".print-container");
 
-    if (!element) return;
+  if (!element) return;
 
-    const opt = {
-      margin: 0.3,
-      filename: `voucher-${guestText || "cliente"}.pdf`,
-      image: { type: "jpeg", quality: 1 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
-    };
+  // @ts-ignore
+  const html2pdf = (window as any).html2pdf;
+
+  if (!html2pdf) {
+    alert("html2pdf no está cargado");
+    return;
+  }
+
+  html2pdf().from(element).save();
+};
 
     html2pdf().set(opt).from(element).save();
   };
