@@ -41,7 +41,7 @@ export default function VoucherFormPage() {
   
   const [, setLocation] = useLocation();
 
-  // ✅ TYPE SEGURO (NO ROMPE RENDER)
+  // 🔥 TYPE SEGURO
   const [type, setType] = useState<string | null>(null);
 
   const { toast } = useToast();
@@ -58,12 +58,7 @@ export default function VoucherFormPage() {
       country: "",
       guestCount: 1,
       stayDates: "",
-      services: [
-        {
-          title: "1- TRASLADOS",
-          items: [{ value: "" }]
-        }
-      ]
+      services: [{ title: "1- TRASLADOS", items: [{ value: "" }] }]
     }
   });
 
@@ -72,7 +67,7 @@ export default function VoucherFormPage() {
     name: "services"
   });
 
-  // 🔥 Detectar tipo seguro
+  // 🔥 Detectar tipo SIN romper Render
   useEffect(() => {
     if (typeof window !== "undefined") {
       const t = new URLSearchParams(window.location.search).get("type");
@@ -80,7 +75,7 @@ export default function VoucherFormPage() {
     }
   }, []);
 
-  // 🔥 Aplicar cambios según tipo
+  // 🔥 Aplicar tipo
   useEffect(() => {
     if (!type) return;
 
@@ -108,7 +103,7 @@ export default function VoucherFormPage() {
         }))
       });
     }
-  }, [voucher, isEdit]);
+  }, [voucher, isEdit, form]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -122,47 +117,44 @@ export default function VoucherFormPage() {
 
       if (isEdit && voucherId) {
         await updateMutation.mutateAsync({ id: voucherId, ...payload });
-        toast({ title: "Actualizado" });
+        toast({ title: "Voucher actualizado con éxito" });
       } else {
         const created = await createMutation.mutateAsync(payload);
+
         queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+
         window.location.href = `/vouchers/${created.id}`;
         return;
       }
 
       setLocation("/");
-    } catch {
-      toast({ title: "Error", variant: "destructive" });
+    } catch (error) {
+      toast({
+        title: "Error al guardar",
+        variant: "destructive"
+      });
     }
   };
+
+  const isPending = createMutation.isPending || updateMutation.isPending;
 
   if (isEdit && isLoadingVoucher) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <PageHeader title="Crear Voucher" description={`Tipo: ${type || "internacional"}`} />
+    <div className="min-h-screen bg-muted/30 pb-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-primary mb-6 transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Volver al Dashboard
+        </Link>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
-        <input {...form.register("guestName")} placeholder="Nombre" />
-        <input {...form.register("destination")} placeholder="Destino" />
-        <input {...form.register("country")} placeholder="País" />
-
-        {serviceFields.map((field, index) => (
-          <div key={field.id}>
-            <input {...form.register(`services.${index}.title`)} />
-          </div>
-        ))}
-
-        <button type="submit">Guardar</button>
-
-      </form>
-    </div>
-  );
-}
+        <PageHeader 
+          title={isEdit ? "Editar Voucher" : "Crear Nuevo Voucher"} 
+          description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
+        />
