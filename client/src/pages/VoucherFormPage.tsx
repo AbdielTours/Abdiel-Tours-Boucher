@@ -1,6 +1,5 @@
+import { useState, useEffect } from "react";
 import { useRoute, useLocation, Link } from "wouter";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,16 +15,14 @@ import {
   Loader2
 } from "lucide-react";
 
-// 🔥 Schema actualizado
+// 🔥 SCHEMA
 const formSchema = z.object({
-  type: z.string().optional(),
   guestName: z.string().min(2),
   destination: z.string().min(2),
   country: z.string().min(2),
   guestCount: z.coerce.number().min(1),
   stayDates: z.string().min(2),
 
-  // internacional
   services: z.array(z.object({
     title: z.string(),
     items: z.array(z.object({
@@ -33,7 +30,7 @@ const formSchema = z.object({
     }))
   })).optional(),
 
-  // nacional
+  // 🔥 NUEVO (NACIONAL)
   hotel: z.string().optional(),
   room: z.string().optional(),
   meal: z.string().optional()
@@ -42,7 +39,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function VoucherFormPage() {
-  const queryClient = useQueryClient();
 
   const [, params] = useRoute("/vouchers/:id/edit");
   const isEdit = !!params?.id;
@@ -50,9 +46,9 @@ export default function VoucherFormPage() {
 
   const [location, setLocation] = useLocation();
 
-  // 🔥 LEER TYPE DESDE URL
-  const searchParams = new URLSearchParams(location.split("?")[1]);
-  const typeFromUrl = searchParams.get("type") || "internacional";
+  // 🔥 DETECTAR TIPO
+  const paramsUrl = new URLSearchParams(location.split("?")[1]);
+  const type = paramsUrl.get("type") || "internacional";
 
   const { toast } = useToast();
   const { data: voucher, isLoading } = useVoucher(voucherId);
@@ -62,19 +58,19 @@ export default function VoucherFormPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: typeFromUrl,
       guestName: "",
       destination: "",
       country: "",
       guestCount: 1,
       stayDates: "",
+      hotel: "",
+      room: "",
+      meal: "",
       services: [{ title: "1- TRASLADOS", items: [{ value: "" }] }]
     }
   });
 
-  const type = form.watch("type");
-
-  const { fields, append, remove } = useFieldArray({
+  const { fields: serviceFields, append: appendService, remove: removeService } = useFieldArray({
     control: form.control,
     name: "services"
   });
@@ -97,70 +93,105 @@ export default function VoucherFormPage() {
 
       const created = await createMutation.mutateAsync(payload);
 
-      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-
       window.location.href = `/vouchers/${created.id}`;
-    } catch (err) {
-      toast({ title: "Error", variant: "destructive" });
+    } catch (error) {
+      toast({ title: "Error al guardar", variant: "destructive" });
     }
   };
 
   if (isEdit && isLoading) {
-    return <Loader2 className="animate-spin" />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-10 h-10 animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Link href="/">← Volver</Link>
+    <div className="min-h-screen bg-muted/30 pb-12">
+      <div className="max-w-4xl mx-auto px-4 pt-8">
 
-      <PageHeader 
-        title="Crear Voucher"
-        description={`Tipo: ${type}`}
-      />
+        <Link href="/" className="inline-flex items-center mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Volver
+        </Link>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <PageHeader 
+          title={isEdit ? "Editar Voucher" : "Crear Voucher"} 
+          description={`Tipo: ${type}`}
+        />
 
-        {/* INFO GENERAL */}
-        <input {...form.register("guestName")} placeholder="Nombre" />
-        <input {...form.register("destination")} placeholder="Destino" />
-        <input {...form.register("country")} placeholder="País" />
-        <input {...form.register("stayDates")} placeholder="Fechas" />
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-        {/* ✈️ INTERNACIONAL */}
-        {type === "internacional" && (
-          <div>
-            <h3>Servicios</h3>
+          {/* INFO HUÉSPED */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm border">
+            <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
 
-            {fields.map((field, i) => (
-              <div key={field.id}>
-                <input {...form.register(`services.${i}.title`)} />
+            <div className="grid grid-cols-2 gap-6">
 
-                {field.items?.map((_, j) => (
-                  <input {...form.register(`services.${i}.items.${j}.value`)} />
-                ))}
+              <input {...form.register("guestName")} placeholder="Nombre" className="input" />
+              <input {...form.register("destination")} placeholder="Destino" className="input" />
+              <input {...form.register("country")} placeholder="País" className="input" />
+              <input {...form.register("stayDates")} placeholder="Fechas" className="input" />
 
-                <button type="button" onClick={() => remove(i)}>Eliminar</button>
+            </div>
+          </div>
+
+          {/* ✈️ INTERNACIONAL */}
+          {type === "internacional" && (
+            <div className="bg-card rounded-2xl p-6 shadow-sm border">
+
+              <h2 className="text-xl font-semibold mb-6">Servicios</h2>
+
+              {serviceFields.map((field, index) => (
+                <div key={field.id} className="mb-4">
+
+                  <input {...form.register(`services.${index}.title`)} className="input" />
+
+                  {field.items?.map((_, i) => (
+                    <input 
+                      key={i}
+                      {...form.register(`services.${index}.items.${i}.value`)} 
+                      className="input mt-2"
+                    />
+                  ))}
+
+                  <button type="button" onClick={() => removeService(index)}>
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+
+              <button type="button" onClick={() => appendService({ title: "", items: [{ value: "" }] })}>
+                Agregar servicio
+              </button>
+
+            </div>
+          )}
+
+          {/* 🏨 NACIONAL */}
+          {type === "nacional" && (
+            <div className="bg-card rounded-2xl p-6 shadow-sm border">
+
+              <h2 className="text-xl font-semibold mb-6">Información del Hotel</h2>
+
+              <div className="grid grid-cols-2 gap-6">
+
+                <input {...form.register("hotel")} placeholder="Hotel" className="input" />
+                <input {...form.register("room")} placeholder="Habitación" className="input" />
+                <input {...form.register("meal")} placeholder="Plan" className="input" />
+
               </div>
-            ))}
+            </div>
+          )}
 
-            <button type="button" onClick={() => append({ title: "", items: [{ value: "" }] })}>
-              Agregar
-            </button>
-          </div>
-        )}
+          <button type="submit" className="btn">
+            <Save className="w-4 h-4 mr-2" />
+            Guardar
+          </button>
 
-        {/* 🏨 NACIONAL */}
-        {type === "nacional" && (
-          <div>
-            <h3>Hotel</h3>
-            <input {...form.register("hotel")} placeholder="Nombre del hotel" />
-            <input {...form.register("room")} placeholder="Habitación" />
-            <input {...form.register("meal")} placeholder="Plan" />
-          </div>
-        )}
-
-        <button type="submit">Guardar</button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
