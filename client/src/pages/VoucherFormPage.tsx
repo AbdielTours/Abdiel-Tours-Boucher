@@ -12,7 +12,6 @@ import {
   Save,
   PlusCircle,
   Trash2,
-  GripVertical,
   Loader2
 } from "lucide-react";
 
@@ -46,7 +45,7 @@ export default function VoucherFormPage() {
   const createMutation = useCreateVoucher();
   const updateMutation = useUpdateVoucher();
 
-  // 🔥 Tipo (nacional / internacional)
+  // Tipo
   const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export default function VoucherFormPage() {
     name: "services"
   });
 
-  // 🔥 Si es nacional cambia automáticamente
+  // Cambio automático nacional
   useEffect(() => {
     if (!type) return;
 
@@ -142,7 +141,7 @@ export default function VoucherFormPage() {
     <div className="min-h-screen bg-muted/30 pb-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
 
-        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-primary mb-6 transition-colors">
+        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-primary mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Volver al Dashboard
         </Link>
@@ -154,57 +153,44 @@ export default function VoucherFormPage() {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-          {/* Información del huésped */}
-          <div className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border/60">
+          {/* INFO */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm border">
             <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
               <div className="md:col-span-2">
-                <label className="text-sm font-medium">Nombre</label>
-                <input {...form.register("guestName")} className="w-full px-4 py-3 border rounded-xl" />
+                <label>Nombre</label>
+                <input {...form.register("guestName")} className="w-full p-3 border rounded-xl" />
               </div>
 
-              <div>
-                <label className="text-sm font-medium">Destino</label>
-                <input {...form.register("destination")} className="w-full px-4 py-3 border rounded-xl" />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">País</label>
-                <input {...form.register("country")} className="w-full px-4 py-3 border rounded-xl" />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Cantidad</label>
-                <input type="number" {...form.register("guestCount")} className="w-full px-4 py-3 border rounded-xl" />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Fechas</label>
-                <input {...form.register("stayDates")} className="w-full px-4 py-3 border rounded-xl" />
-              </div>
+              <input {...form.register("destination")} placeholder="Destino" className="p-3 border rounded-xl"/>
+              <input {...form.register("country")} placeholder="País" className="p-3 border rounded-xl"/>
+              <input type="number" {...form.register("guestCount")} className="p-3 border rounded-xl"/>
+              <input {...form.register("stayDates")} placeholder="Fechas" className="p-3 border rounded-xl"/>
 
             </div>
           </div>
 
-          {/* Servicios */}
-          <div className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border/60">
-            <h2 className="text-xl font-semibold mb-6">Servicios</h2>
+          {/* SERVICIOS */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm border">
+            <h2 className="text-xl font-semibold mb-6">Servicios Incluidos</h2>
 
             {serviceFields.map((field, index) => (
-              <div key={field.id} className="mb-4">
+              <div key={field.id} className="mb-4 p-4 border rounded-xl">
 
                 <input
                   {...form.register(`services.${index}.title`)}
-                  className="w-full px-4 py-2 border rounded-lg mb-2"
+                  className="w-full p-2 border rounded mb-2"
                 />
 
-                <button
-                  type="button"
-                  onClick={() => removeService(index)}
-                  className="text-red-500 text-sm mb-2"
-                >
+                <ServiceItems
+                  control={form.control}
+                  register={form.register}
+                  serviceIndex={index}
+                />
+
+                <button type="button" onClick={() => removeService(index)} className="text-red-500 mt-2">
                   Eliminar
                 </button>
 
@@ -220,7 +206,7 @@ export default function VoucherFormPage() {
             </button>
           </div>
 
-          {/* Botón */}
+          {/* BOTON */}
           <div className="flex justify-end">
             <button type="submit" className="bg-blue-600 text-white px-6 py-3 rounded-xl">
               {isEdit ? "Guardar Cambios" : "Crear Voucher"}
@@ -228,8 +214,38 @@ export default function VoucherFormPage() {
           </div>
 
         </form>
-
       </div>
+    </div>
+  );
+}
+
+// 👇 COMPONENTE ITEMS
+function ServiceItems({ control, register, serviceIndex }: any) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `services.${serviceIndex}.items`
+  });
+
+  return (
+    <div>
+      {fields.map((item, i) => (
+        <div key={item.id} className="flex gap-2 mb-2">
+
+          <input
+            {...register(`services.${serviceIndex}.items.${i}.value`)}
+            className="flex-1 p-2 border rounded"
+          />
+
+          <button type="button" onClick={() => remove(i)}>
+            <Trash2 className="w-4 h-4 text-red-500" />
+          </button>
+
+        </div>
+      ))}
+
+      <button type="button" onClick={() => append({ value: "" })} className="text-blue-600 text-sm">
+        + Agregar item
+      </button>
     </div>
   );
 }
