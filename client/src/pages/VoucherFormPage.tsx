@@ -9,8 +9,6 @@ import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
-  Save,
-  PlusCircle,
   Trash2,
   Loader2
 } from "lucide-react";
@@ -45,7 +43,6 @@ export default function VoucherFormPage() {
   const createMutation = useCreateVoucher();
   const updateMutation = useUpdateVoucher();
 
-  // Tipo
   const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
@@ -70,10 +67,8 @@ export default function VoucherFormPage() {
     name: "services"
   });
 
-  // Cambio automático nacional
+  // 👉 Nacional automático
   useEffect(() => {
-    if (!type) return;
-
     if (type === "nacional") {
       form.setValue("services", [
         {
@@ -84,7 +79,7 @@ export default function VoucherFormPage() {
     }
   }, [type]);
 
-  // Edit mode
+  // 👉 Edit mode
   useEffect(() => {
     if (voucher && isEdit) {
       form.reset({
@@ -99,7 +94,7 @@ export default function VoucherFormPage() {
         }))
       });
     }
-  }, [voucher, isEdit, form]);
+  }, [voucher]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -139,11 +134,11 @@ export default function VoucherFormPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div className="max-w-4xl mx-auto px-4 pt-8">
 
-        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-primary mb-6">
+        <Link href="/" className="inline-flex items-center mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver al Dashboard
+          Volver
         </Link>
 
         <PageHeader
@@ -154,26 +149,45 @@ export default function VoucherFormPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
           {/* INFO */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm border">
+          <div className="bg-card rounded-2xl p-6 border">
+
             <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+              {/* Nombre */}
               <div className="md:col-span-2">
-                <label>Nombre</label>
-                <input {...form.register("guestName")} className="w-full p-3 border rounded-xl" />
+                <input
+                  {...form.register("guestName")}
+                  placeholder="Nombre del huésped"
+                  className="p-3 border rounded-xl w-full"
+                />
               </div>
 
-              <input {...form.register("destination")} placeholder="Destino" className="p-3 border rounded-xl"/>
-              <input {...form.register("country")} placeholder="País" className="p-3 border rounded-xl"/>
-              <input type="number" {...form.register("guestCount")} className="p-3 border rounded-xl"/>
-              <input {...form.register("stayDates")} placeholder="Fechas" className="p-3 border rounded-xl"/>
+              {/* Tipo dinámico */}
+              {type === "nacional" ? (
+                <>
+                  <input {...form.register("destination")} placeholder="Hotel" className="p-3 border rounded-xl" />
+                  <input {...form.register("country")} placeholder="Ciudad" className="p-3 border rounded-xl" />
+                  <input type="number" {...form.register("guestCount")} placeholder="Cantidad" className="p-3 border rounded-xl" />
+                  <input type="date" {...form.register("stayDates")} className="p-3 border rounded-xl" />
+                  <input type="date" className="p-3 border rounded-xl" />
+                </>
+              ) : (
+                <>
+                  <input {...form.register("destination")} placeholder="Destino" className="p-3 border rounded-xl" />
+                  <input {...form.register("country")} placeholder="País" className="p-3 border rounded-xl" />
+                  <input type="number" {...form.register("guestCount")} placeholder="Cantidad" className="p-3 border rounded-xl" />
+                  <input {...form.register("stayDates")} placeholder="Fechas" className="p-3 border rounded-xl" />
+                </>
+              )}
 
             </div>
           </div>
 
           {/* SERVICIOS */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm border">
+          <div className="bg-card rounded-2xl p-6 border">
+
             <h2 className="text-xl font-semibold mb-6">Servicios Incluidos</h2>
 
             {serviceFields.map((field, index) => (
@@ -204,12 +218,13 @@ export default function VoucherFormPage() {
             >
               + Agregar servicio
             </button>
+
           </div>
 
-          {/* BOTON */}
+          {/* BOTÓN */}
           <div className="flex justify-end">
             <button type="submit" className="bg-blue-600 text-white px-6 py-3 rounded-xl">
-              {isEdit ? "Guardar Cambios" : "Crear Voucher"}
+              {isPending ? "Guardando..." : isEdit ? "Guardar Cambios" : "Crear Voucher"}
             </button>
           </div>
 
@@ -219,7 +234,7 @@ export default function VoucherFormPage() {
   );
 }
 
-// 👇 COMPONENTE ITEMS
+// ITEMS
 function ServiceItems({ control, register, serviceIndex }: any) {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -230,16 +245,13 @@ function ServiceItems({ control, register, serviceIndex }: any) {
     <div>
       {fields.map((item, i) => (
         <div key={item.id} className="flex gap-2 mb-2">
-
           <input
             {...register(`services.${serviceIndex}.items.${i}.value`)}
             className="flex-1 p-2 border rounded"
           />
-
           <button type="button" onClick={() => remove(i)}>
             <Trash2 className="w-4 h-4 text-red-500" />
           </button>
-
         </div>
       ))}
 
