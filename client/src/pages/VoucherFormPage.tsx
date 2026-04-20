@@ -8,10 +8,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, GripVertical } from "lucide-react";
 
-// 🔥 detectar tipo
 const type = new URLSearchParams(window.location.search).get("type");
 
-// esquema
 const formSchema = z.object({
   guestName: z.string().min(2),
   destination: z.string().min(2),
@@ -48,27 +46,25 @@ export default function VoucherFormPage() {
       country: "",
       guestCount: 1,
       stayDates: "",
-      services:
-        type === "nacional"
-          ? [
-              {
-                title: "1- HOTEL",
-                items: [{ value: "Alojamiento incluido" }]
-              }
-            ]
-          : [
-              {
-                title: "1- TRASLADOS",
-                items: [{ value: "" }]
-              }
-            ]
+      services: [
+        {
+          title: type === "nacional" ? "1- HOTEL" : "1- TRASLADOS",
+          items: [{ value: "" }]
+        }
+      ]
     }
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const servicesArray = useFieldArray({
     control: form.control,
     name: "services"
   });
+
+  const itemsArray = (index: number) =>
+    useFieldArray({
+      control: form.control,
+      name: `services.${index}.items`
+    });
 
   useEffect(() => {
     if (voucher && isEdit) {
@@ -113,7 +109,7 @@ export default function VoucherFormPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin w-10 h-10 text-primary" />
+        <Loader2 className="animate-spin w-10 h-10" />
       </div>
     );
   }
@@ -122,9 +118,8 @@ export default function VoucherFormPage() {
     <div className="min-h-screen bg-muted/30 pb-12">
       <div className="max-w-4xl mx-auto px-4 pt-8">
 
-        <Link href="/" className="flex items-center text-muted-foreground mb-6">
-          <ArrowLeft className="mr-2 w-4 h-4" />
-          Volver al Dashboard
+        <Link href="/" className="flex items-center mb-6">
+          <ArrowLeft className="mr-2" /> Volver
         </Link>
 
         <PageHeader
@@ -138,24 +133,16 @@ export default function VoucherFormPage() {
           <div className="bg-card rounded-2xl p-6 shadow border">
             <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
 
-            <div className="grid gap-6">
+            <input {...form.register("guestName")} className="input mb-4" placeholder="Nombre" />
 
-              <input
-                {...form.register("guestName")}
-                placeholder="Ej. Juan Pérez"
-                className="input"
-              />
+            <div className="grid md:grid-cols-2 gap-4">
+              <input {...form.register("destination")} className="input" placeholder="Destino" />
+              <input {...form.register("country")} className="input" placeholder="País" />
+            </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <input {...form.register("destination")} placeholder="Destino" className="input" />
-                <input {...form.register("country")} placeholder="País" className="input" />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <input type="number" {...form.register("guestCount")} className="input" />
-                <input {...form.register("stayDates")} placeholder="Fechas" className="input" />
-              </div>
-
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <input type="number" {...form.register("guestCount")} className="input" />
+              <input {...form.register("stayDates")} className="input" placeholder="Fechas" />
             </div>
           </div>
 
@@ -163,38 +150,48 @@ export default function VoucherFormPage() {
           <div className="bg-card rounded-2xl p-6 shadow border">
             <h2 className="text-xl font-semibold mb-6">Servicios Incluidos</h2>
 
-            {fields.map((field, index) => (
-              <div key={field.id} className="p-4 border rounded-xl mb-4">
+            {servicesArray.fields.map((field, index) => {
+              const items = itemsArray(index);
 
-                <input
-                  {...form.register(`services.${index}.title`)}
-                  className="input mb-3 font-semibold"
-                />
+              return (
+                <div key={field.id} className="border p-4 rounded-xl mb-4">
 
-                {field.items.map((_, i) => (
-                  <div key={i} className="flex gap-2 mb-2">
-                    <GripVertical className="w-4 mt-3 text-muted-foreground" />
-                    <input
-                      {...form.register(`services.${index}.items.${i}.value`)}
-                      className="input flex-1"
-                    />
-                  </div>
-                ))}
+                  <input
+                    {...form.register(`services.${index}.title`)}
+                    className="input mb-3 font-semibold"
+                  />
 
-                <button type="button" onClick={() => remove(index)}>
-                  <Trash2 className="text-red-500" />
-                </button>
+                  {items.fields.map((item, i) => (
+                    <div key={item.id} className="flex gap-2 mb-2">
+                      <GripVertical className="w-4 mt-3" />
+                      <input
+                        {...form.register(`services.${index}.items.${i}.value`)}
+                        className="input flex-1"
+                      />
+                      <button type="button" onClick={() => items.remove(i)}>
+                        <Trash2 className="text-red-500" />
+                      </button>
+                    </div>
+                  ))}
 
-              </div>
-            ))}
+                  <button type="button" onClick={() => items.append({ value: "" })}>
+                    + Agregar item
+                  </button>
+
+                </div>
+              );
+            })}
 
             <button
               type="button"
-              onClick={() => append({ title: "", items: [{ value: "" }] })}
-              className="text-primary flex items-center"
+              onClick={() =>
+                servicesArray.append({
+                  title: "",
+                  items: [{ value: "" }]
+                })
+              }
             >
-              <PlusCircle className="mr-2" />
-              Agregar otro bloque
+              <PlusCircle /> Agregar otro bloque
             </button>
 
           </div>
