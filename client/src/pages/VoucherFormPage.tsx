@@ -151,4 +151,14 @@ export default function VoucherFormPage() {
           description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
         />
 
-        {/* 🔥 TODO TU FORM ORIGINAL SIGUE IGUAL ↓↓↓ */}
+<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+  <div className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border/60">
+    
+    <input {...form.register("guestName")} placeholder="Nombre" />
+    
+    <input {...form.register("destination")} placeholder="Destino" />
+
+  </div>
+
+</form>
