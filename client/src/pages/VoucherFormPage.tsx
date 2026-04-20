@@ -43,7 +43,7 @@ export default function VoucherFormPage() {
   const [location, setLocation] = useLocation();
 
   // 🔥 DETECTAR TIPO (NUEVO)
-  const type = new URLSearchParams(location.split("?")[1]).get("type");
+  const type = new URLSearchParams(window.location.search).get("type");
 
   const { toast } = useToast();
   
