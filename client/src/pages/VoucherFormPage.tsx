@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRoute, useLocation, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import {
   Loader2
 } from "lucide-react";
 
-// 🔥 SCHEMA
+// ✅ SCHEMA ORIGINAL + NACIONAL
 const formSchema = z.object({
   guestName: z.string().min(2),
   destination: z.string().min(2),
@@ -30,7 +30,7 @@ const formSchema = z.object({
     }))
   })).optional(),
 
-  // 🔥 NUEVO (NACIONAL)
+  // 🔥 nacional
   hotel: z.string().optional(),
   room: z.string().optional(),
   meal: z.string().optional()
@@ -46,7 +46,7 @@ export default function VoucherFormPage() {
 
   const [location, setLocation] = useLocation();
 
-  // 🔥 DETECTAR TIPO
+  // 🔥 detectar tipo
   const paramsUrl = new URLSearchParams(location.split("?")[1]);
   const type = paramsUrl.get("type") || "internacional";
 
@@ -95,14 +95,17 @@ export default function VoucherFormPage() {
 
       window.location.href = `/vouchers/${created.id}`;
     } catch (error) {
-      toast({ title: "Error al guardar", variant: "destructive" });
+      toast({
+        title: "Error al guardar",
+        variant: "destructive"
+      });
     }
   };
 
   if (isEdit && isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -111,59 +114,70 @@ export default function VoucherFormPage() {
     <div className="min-h-screen bg-muted/30 pb-12">
       <div className="max-w-4xl mx-auto px-4 pt-8">
 
-        <Link href="/" className="inline-flex items-center mb-6">
+        <Link href="/" className="inline-flex items-center text-muted-foreground mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver
+          Volver al Dashboard
         </Link>
 
         <PageHeader 
-          title={isEdit ? "Editar Voucher" : "Crear Voucher"} 
+          title="Crear Nuevo Voucher"
           description={`Tipo: ${type}`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
           {/* INFO HUÉSPED */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm border">
-            <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
+          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border/60">
+            <h2 className="text-xl font-display font-semibold mb-6">
+              Información del Huésped
+            </h2>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              <input {...form.register("guestName")} placeholder="Nombre" className="input" />
-              <input {...form.register("destination")} placeholder="Destino" className="input" />
-              <input {...form.register("country")} placeholder="País" className="input" />
-              <input {...form.register("stayDates")} placeholder="Fechas" className="input" />
+              <input {...form.register("guestName")} placeholder="Nombre del huésped"
+                className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+              />
+
+              <input {...form.register("destination")} placeholder="Destino"
+                className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+              />
+
+              <input {...form.register("country")} placeholder="País"
+                className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+              />
+
+              <input {...form.register("stayDates")} placeholder="Fechas"
+                className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+              />
 
             </div>
           </div>
 
           {/* ✈️ INTERNACIONAL */}
           {type === "internacional" && (
-            <div className="bg-card rounded-2xl p-6 shadow-sm border">
+            <div className="bg-card rounded-2xl p-6 shadow-sm border border-border/60">
 
-              <h2 className="text-xl font-semibold mb-6">Servicios</h2>
+              <h2 className="text-xl font-display font-semibold mb-6">
+                Servicios Incluidos
+              </h2>
 
               {serviceFields.map((field, index) => (
                 <div key={field.id} className="mb-4">
 
-                  <input {...form.register(`services.${index}.title`)} className="input" />
+                  <input 
+                    {...form.register(`services.${index}.title`)}
+                    className="w-full px-4 py-2.5 rounded-lg bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+                  />
 
-                  {field.items?.map((_, i) => (
-                    <input 
-                      key={i}
-                      {...form.register(`services.${index}.items.${i}.value`)} 
-                      className="input mt-2"
-                    />
-                  ))}
-
-                  <button type="button" onClick={() => removeService(index)}>
-                    Eliminar
-                  </button>
                 </div>
               ))}
 
-              <button type="button" onClick={() => appendService({ title: "", items: [{ value: "" }] })}>
-                Agregar servicio
+              <button
+                type="button"
+                onClick={() => appendService({ title: "", items: [{ value: "" }] })}
+                className="mt-4 text-primary"
+              >
+                + Agregar servicio
               </button>
 
             </div>
@@ -171,24 +185,39 @@ export default function VoucherFormPage() {
 
           {/* 🏨 NACIONAL */}
           {type === "nacional" && (
-            <div className="bg-card rounded-2xl p-6 shadow-sm border">
+            <div className="bg-card rounded-2xl p-6 shadow-sm border border-border/60">
 
-              <h2 className="text-xl font-semibold mb-6">Información del Hotel</h2>
+              <h2 className="text-xl font-display font-semibold mb-6">
+                Información del Hotel
+              </h2>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <input {...form.register("hotel")} placeholder="Hotel" className="input" />
-                <input {...form.register("room")} placeholder="Habitación" className="input" />
-                <input {...form.register("meal")} placeholder="Plan" className="input" />
+                <input {...form.register("hotel")} placeholder="Nombre del hotel"
+                  className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+                />
+
+                <input {...form.register("room")} placeholder="Habitación"
+                  className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+                />
+
+                <input {...form.register("meal")} placeholder="Plan"
+                  className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none"
+                />
 
               </div>
             </div>
           )}
 
-          <button type="submit" className="btn">
-            <Save className="w-4 h-4 mr-2" />
-            Guardar
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Guardar Voucher
+            </button>
+          </div>
 
         </form>
       </div>
