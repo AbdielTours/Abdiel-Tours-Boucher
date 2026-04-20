@@ -6,9 +6,9 @@ import { z } from "zod";
 import { useVoucher, useCreateVoucher, useUpdateVoucher } from "@/hooks/use-vouchers";
 import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, PlusCircle, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, GripVertical } from "lucide-react";
 
-// 👇 detectar tipo
+// 🔥 detectar tipo
 const type = new URLSearchParams(window.location.search).get("type");
 
 // esquema
@@ -21,11 +21,7 @@ const formSchema = z.object({
   services: z.array(
     z.object({
       title: z.string(),
-      items: z.array(
-        z.object({
-          value: z.string()
-        })
-      )
+      items: z.array(z.object({ value: z.string() }))
     })
   )
 });
@@ -57,7 +53,7 @@ export default function VoucherFormPage() {
           ? [
               {
                 title: "1- HOTEL",
-                items: [{ value: "Alojamiento" }]
+                items: [{ value: "Alojamiento incluido" }]
               }
             ]
           : [
@@ -109,82 +105,109 @@ export default function VoucherFormPage() {
       }
 
       setLocation("/");
-    } catch (e) {
-      toast({ title: "Error guardando" });
+    } catch {
+      toast({ title: "Error guardando", variant: "destructive" });
     }
   };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin w-10 h-10" />
+        <Loader2 className="animate-spin w-10 h-10 text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Link href="/" className="flex items-center mb-4">
-        <ArrowLeft className="mr-2" /> Volver
-      </Link>
+    <div className="min-h-screen bg-muted/30 pb-12">
+      <div className="max-w-4xl mx-auto px-4 pt-8">
 
-      <PageHeader
-        title="Crear Nuevo Voucher"
-        description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
-      />
+        <Link href="/" className="flex items-center text-muted-foreground mb-6">
+          <ArrowLeft className="mr-2 w-4 h-4" />
+          Volver al Dashboard
+        </Link>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <PageHeader
+          title="Crear Nuevo Voucher"
+          description={`Tipo: ${type === "nacional" ? "Nacional 🇩🇴" : "Internacional ✈️"}`}
+        />
 
-        {/* INFO */}
-        <div className="bg-white p-6 rounded-xl border">
-          <h2 className="mb-4 font-semibold">Información del Huésped</h2>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-          <input {...form.register("guestName")} placeholder="Nombre" className="w-full mb-3 p-2 border rounded" />
+          {/* INFO */}
+          <div className="bg-card rounded-2xl p-6 shadow border">
+            <h2 className="text-xl font-semibold mb-6">Información del Huésped</h2>
 
-          <div className="grid grid-cols-2 gap-3">
-            <input {...form.register("destination")} placeholder="Destino" className="p-2 border rounded" />
-            <input {...form.register("country")} placeholder="País" className="p-2 border rounded" />
-            <input type="number" {...form.register("guestCount")} className="p-2 border rounded" />
-            <input {...form.register("stayDates")} placeholder="Fechas" className="p-2 border rounded" />
-          </div>
-        </div>
-
-        {/* SERVICIOS */}
-        <div className="bg-white p-6 rounded-xl border">
-          <h2 className="mb-4 font-semibold">Servicios</h2>
-
-          {fields.map((field, index) => (
-            <div key={field.id} className="mb-4 border p-3 rounded">
+            <div className="grid gap-6">
 
               <input
-                {...form.register(`services.${index}.title`)}
-                className="w-full mb-2 p-2 border rounded"
+                {...form.register("guestName")}
+                placeholder="Ej. Juan Pérez"
+                className="input"
               />
 
-              {field.items?.map((_, i) => (
-                <input
-                  key={i}
-                  {...form.register(`services.${index}.items.${i}.value`)}
-                  className="w-full mb-2 p-2 border rounded"
-                />
-              ))}
+              <div className="grid md:grid-cols-2 gap-4">
+                <input {...form.register("destination")} placeholder="Destino" className="input" />
+                <input {...form.register("country")} placeholder="País" className="input" />
+              </div>
 
-              <button type="button" onClick={() => remove(index)}>
-                <Trash2 />
-              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input type="number" {...form.register("guestCount")} className="input" />
+                <input {...form.register("stayDates")} placeholder="Fechas" className="input" />
+              </div>
+
             </div>
-          ))}
+          </div>
 
-          <button type="button" onClick={() => append({ title: "", items: [{ value: "" }] })}>
-            <PlusCircle /> Agregar servicio
-          </button>
-        </div>
+          {/* SERVICIOS */}
+          <div className="bg-card rounded-2xl p-6 shadow border">
+            <h2 className="text-xl font-semibold mb-6">Servicios Incluidos</h2>
 
-        <button className="bg-blue-600 text-white px-6 py-2 rounded flex items-center">
-          <Save className="mr-2" /> Guardar
-        </button>
+            {fields.map((field, index) => (
+              <div key={field.id} className="p-4 border rounded-xl mb-4">
 
-      </form>
+                <input
+                  {...form.register(`services.${index}.title`)}
+                  className="input mb-3 font-semibold"
+                />
+
+                {field.items.map((_, i) => (
+                  <div key={i} className="flex gap-2 mb-2">
+                    <GripVertical className="w-4 mt-3 text-muted-foreground" />
+                    <input
+                      {...form.register(`services.${index}.items.${i}.value`)}
+                      className="input flex-1"
+                    />
+                  </div>
+                ))}
+
+                <button type="button" onClick={() => remove(index)}>
+                  <Trash2 className="text-red-500" />
+                </button>
+
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => append({ title: "", items: [{ value: "" }] })}
+              className="text-primary flex items-center"
+            >
+              <PlusCircle className="mr-2" />
+              Agregar otro bloque
+            </button>
+
+          </div>
+
+          <div className="flex justify-end">
+            <button className="bg-primary text-white px-6 py-3 rounded-xl flex items-center">
+              <Save className="mr-2" />
+              Crear Voucher
+            </button>
+          </div>
+
+        </form>
+      </div>
     </div>
   );
 }
