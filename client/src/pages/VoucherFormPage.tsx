@@ -4,13 +4,12 @@ import { useRoute, useLocation, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useVoucher, useCreateVoucher, useUpdateVoucher } from "@/hooks/use-vouchers";
+import { useVoucher, useCreateVoucher } from "@/hooks/use-vouchers";
 import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
   Trash2,
-  Loader2,
   PlusCircle
 } from "lucide-react";
 
@@ -41,14 +40,11 @@ export default function VoucherFormPage() {
 
   const [, params] = useRoute("/vouchers/:id/edit");
   const isEdit = !!params?.id;
-  const voucherId = isEdit ? parseInt(params.id) : null;
 
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const { data: voucher, isLoading: isLoadingVoucher } = useVoucher(voucherId);
   const createMutation = useCreateVoucher();
-  const updateMutation = useUpdateVoucher();
 
   const [type, setType] = useState<string | null>(null);
 
@@ -80,7 +76,7 @@ export default function VoucherFormPage() {
     name: "guestNames"
   });
 
-  const { fields: serviceFields, append: appendService, remove: removeService } = useFieldArray({
+  const { fields: serviceFields, append: appendService } = useFieldArray({
     control: form.control,
     name: "services"
   });
@@ -94,11 +90,17 @@ export default function VoucherFormPage() {
 
       const payload = {
         ...data,
+
+        // 🔥 FIX CLAVE (MULTINOMBRES)
+        guestName: data.guestNames.map(g => g.name).join(", "),
+
         locator: data.locator || "",
         phone: data.phone || "",
         plan: data.plan || "",
         category: data.category || "",
+
         stayDates: stayDatesFormatted,
+
         services: data.services.map((s) => ({
           title: s.title,
           items: s.items.map((i) => i.value),
