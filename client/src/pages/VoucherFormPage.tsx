@@ -92,71 +92,30 @@ export default function VoucherFormPage() {
           ? formatFechas(data.checkIn, data.checkOut)
           : data.stayDates;
 
-      const onSubmit = async (data: FormValues) => {
-  try {
-    const stayDatesFormatted =
-      type === "nacional"
-        ? `${data.checkIn || ""} - ${data.checkOut || ""}`
-        : data.stayDates;
-
-    const payload = {
-      ...data,
-
-      locator: data.locator || "",
-      phone: data.phone || "",
-      plan: data.plan || "",
-      category: data.category || "",
-
-      stayDates: stayDatesFormatted,
-
-      services: data.services.map((s) => ({
-        title: s.title,
-        items: s.items.map((i) => i.value),
-      })),
-    };
-
-    const onSubmit = async (data: FormValues) => {
-  try {
-    const stayDatesFormatted =
-      type === "nacional"
-        ? formatFechas(data.checkIn, data.checkOut)
-        : data.stayDates;
-
-    const payload = {
-      ...data,
-
-      locator: data.locator || "",
-      phone: data.phone || "",
-      plan: data.plan || "",
-      category: data.category || "",
-
-      stayDates: stayDatesFormatted,
-
-      services: data.services.map((s) => ({
-        title: s.title,
-        items: s.items.map((i) => i.value),
-      })),
-    };
-
-    const created = await createMutation.mutateAsync(payload);
-
-    queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-
-    window.location.href = `/vouchers/${created.id}`;
-  } catch (error) {
-    console.error(error);
-    toast({
-      title: "Error al guardar",
-      variant: "destructive",
-    });
-  }
-};
+      const payload = {
+        ...data,
+        locator: data.locator || "",
+        phone: data.phone || "",
+        plan: data.plan || "",
+        category: data.category || "",
+        stayDates: stayDatesFormatted,
+        services: data.services.map((s) => ({
+          title: s.title,
+          items: s.items.map((i) => i.value),
+        })),
+      };
 
       const created = await createMutation.mutateAsync(payload);
+
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+
       window.location.href = `/vouchers/${created.id}`;
-    } catch {
-      toast({ title: "Error", variant: "destructive" });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error al guardar",
+        variant: "destructive",
+      });
     }
   };
 
@@ -172,7 +131,7 @@ export default function VoucherFormPage() {
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-        {/* NOMBRES */}
+        {/* HUÉSPEDES */}
         <div>
           <h3 className="font-semibold mb-2">Huéspedes</h3>
 

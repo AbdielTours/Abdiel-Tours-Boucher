@@ -58,9 +58,6 @@ export default function PrintView() {
   html2pdf().from(element).save();
 };
 
-    html2pdf().set(opt).from(element).save();
-  };
-
   return (
     <div className="min-h-screen bg-muted/20 sm:py-8 font-sans print:bg-white print:py-0">
 
