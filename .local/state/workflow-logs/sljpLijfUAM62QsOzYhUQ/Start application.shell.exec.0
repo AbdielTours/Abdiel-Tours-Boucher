@@ -1,0 +1,6 @@
+[1G[0K⠙[1G[0K
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0K⠙[1G[0K9:32:08 AM [express] serving on port 5000
+3:01:16 PM [express] GET /api/vouchers 304 in 19ms :: [{"id":1,"guestName":"JOEL MARTINEZ\nDILENIA ANTONIA ROJAS","destination":"MEDELLIN","country":"COLOMBIA","guestCount":2,"stayDates":"DEL 17 AL 21 MARZO","services":[{"title":"1- TRASLADO AEROPUERTO HOTEL- IDA Y REGRESO","items":[]},{"title":"2- FIESTA ENCHIVA RUMBERA (1 NOCHE) TOURS NOCTURNO","items":["RECORRIDO POR LA CARRERA 70","PARQUE DEL POBLADO","PARQUE LLERAS","MIRADOR DE LAS PALMAS","GUIA ACOMPANANTE","ASISTENCIA MEDICA","TRASPORTE","DURACION 4 HORAS","SALIDA DE LA CARRERA 70: HORA 7PM"]},{"title":"3- City tour más comuna 13","items":["Transporte ida y regreso","Plaza Botero","Parque de los pies descalzos","Pueblito paisa (cerro Nutibara).","Transporte en Metro y Metrocable.","Recorrido escaleras eléctricas comuna 13."]}],"createdAt":"2026-03-04T14:14:56.420Z"}]

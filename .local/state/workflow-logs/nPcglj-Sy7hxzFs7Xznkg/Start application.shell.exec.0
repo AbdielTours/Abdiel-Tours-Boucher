@@ -1,0 +1,174 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0K4:48:01 PM [express] serving on port 5000
+4:51:27 PM [express] GET /api/vouchers 200 in 12ms :: [{"id":1,"guestName":"JOEL MARTINEZ\nDILENIA ANTONIA ROJAS","destination":"MEDELLIN","country":"COLOMBIA","guestCount":2,"stayDates":"DEL 17 AL 21 MARZO","services":[{"title":"1- TRASLADO AEROPUERTO HOTEL- IDA Y REGRESO","items":[]},{"title":"2- FIESTA ENCHIVA RUMBERA (1 NOCHE) TOURS NOCTURNO","items":["RECORRIDO POR LA CARRERA 70","PARQUE DEL POBLADO","PARQUE LLERAS","MIRADOR DE LAS PALMAS","GUIA ACOMPANANTE","ASISTENCIA MEDICA","TRASPORTE","DURACION 4 HORAS","SALIDA DE LA CARRERA 70: HORA 7PM"]},{"title":"3- City tour más comuna 13","items":["Transporte ida y regreso","Plaza Botero","Parque de los pies descalzos","Pueblito paisa (cerro Nutibara).","Transporte en Metro y Metrocable.","Recorrido escaleras eléctricas comuna 13."]}],"createdAt":"2026-03-04T14:14:56.420Z"}]
+5:07:34 PM [express] GET /api/vouchers 304 in 11ms :: [{"id":1,"guestName":"JOEL MARTINEZ\nDILENIA ANTONIA ROJAS","destination":"MEDELLIN","country":"COLOMBIA","guestCount":2,"stayDates":"DEL 17 AL 21 MARZO","services":[{"title":"1- TRASLADO AEROPUERTO HOTEL- IDA Y REGRESO","items":[]},{"title":"2- FIESTA ENCHIVA RUMBERA (1 NOCHE) TOURS NOCTURNO","items":["RECORRIDO POR LA CARRERA 70","PARQUE DEL POBLADO","PARQUE LLERAS","MIRADOR DE LAS PALMAS","GUIA ACOMPANANTE","ASISTENCIA MEDICA","TRASPORTE","DURACION 4 HORAS","SALIDA DE LA CARRERA 70: HORA 7PM"]},{"title":"3- City tour más comuna 13","items":["Transporte ida y regreso","Plaza Botero","Parque de los pies descalzos","Pueblito paisa (cerro Nutibara).","Transporte en Metro y Metrocable.","Recorrido escaleras eléctricas comuna 13."]}],"createdAt":"2026-03-04T14:14:56.420Z"}]
+^^M  npm install html2pdf.js
+install html2pdf.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:41:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/PrintView.tsx, /src/index.css[22m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:41:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/PrintView.tsx, /src/index.css[22m [33m(x2)[39m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:41:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/PrintView.tsx, /src/index.css[22m [33m(x3)[39m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:41:19 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/PrintView.tsx, /src/index.css[22m [33m(x4)[39m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:44:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/PrintView.tsx, /src/index.css[22m [33m(x5)[39m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:44:05 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "html2pdf.js" from "client/src/pages/PrintView.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m/home/runner/workspace/client/src/pages/PrintView.tsx[39m:5:21
+[33m  20 |  import { Printer, ArrowLeft, Loader2 } from "lucide-react";
+  21 |  import logoImage from "@assets/logo_2024_1772634687195.png";
+  22 |  import html2pdf from "html2pdf.js";
+     |                        ^
+  23 |  export default function PrintView() {
+  24 |    _s();[39m
+      at TransformPluginContext._formatLog (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:28998:43)
+      at TransformPluginContext.error (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:28995:14)
+      at normalizeUrl (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:27118:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async <anonymous> (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:27176:32)
+      at async Promise.all (index 7)
+      at async TransformPluginContext.transform (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:27144:4)
+      at async EnvironmentPluginContainer.transform (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:28796:14)
+      at async loadAndTransform (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:22669:26)
+      at async viteTransformMiddleware (/home/runner/workspace/node_modules/vite/dist/node/chunks/config.js:24541:20)
+[1G[0K⠙[1G[0K[1mnpm[22m [96mnotice[39m
+[1mnpm[22m [96mnotice[39m New [31mmajor[39m version of npm available! [31m10.8.2[39m -> [34m11.11.0[39m
+[1mnpm[22m [96mnotice[39m Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.11.0[39m
+[1mnpm[22m [96mnotice[39m To update run: [4mnpm install -g npm@11.11.0[24m
+[1mnpm[22m [96mnotice[39m
+[1G[0K⠙[1G[0K
