@@ -183,44 +183,6 @@ export default function PrintView() {
                 </td>
               </tr>
 
-              {/* 🔥 CAMPOS NUEVOS */}
-
-              <tr className="border-b">
-                <th className="py-2 text-voucher-blue font-bold uppercase">
-                  Localizador:
-                </th>
-                <td className="py-2 font-bold">
-                  {voucher.locator || "N/A"}
-                </td>
-              </tr>
-
-              <tr className="border-b">
-                <th className="py-2 text-voucher-blue font-bold uppercase">
-                  Teléfono:
-                </th>
-                <td className="py-2 font-bold">
-                  {voucher.phone || "N/A"}
-                </td>
-              </tr>
-
-              <tr className="border-b">
-                <th className="py-2 text-voucher-blue font-bold uppercase">
-                  Plan:
-                </th>
-                <td className="py-2 font-bold">
-                  {voucher.plan || "N/A"}
-                </td>
-              </tr>
-
-              <tr className="border-b">
-                <th className="py-2 text-voucher-blue font-bold uppercase">
-                  Categoría:
-                </th>
-                <td className="py-2 font-bold">
-                  {voucher.category || "N/A"}
-                </td>
-              </tr>
-
             </tbody>
           </table>
 
