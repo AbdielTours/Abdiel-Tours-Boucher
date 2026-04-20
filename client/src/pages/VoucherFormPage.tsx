@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRoute, useLocation, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -98,10 +99,12 @@ export default function VoucherFormPage() {
         await updateMutation.mutateAsync({ id: voucherId, ...payload });
         toast({ title: "Voucher actualizado con éxito" });
       } else {
-        const created = await createMutation.mutateAsync(payload);
-        toast({ title: "Voucher creado con éxito" });
-        setLocation(`/vouchers/${created.id}`); // Redirect to view after create
-        return;
+const created = await createMutation.mutateAsync(payload);
+
+queryClient.invalidateQueries({ queryKey: ["vouchers"] }); // 🔥 MUY IMPORTANTE
+
+window.location.href = `/vouchers/${created.id}`;
+return;
       }
       setLocation("/");
     } catch (error) {

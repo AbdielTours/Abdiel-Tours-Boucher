@@ -26,17 +26,15 @@ export function useVouchers() {
 
 export function useVoucher(id: number | null) {
   return useQuery({
-    queryKey: [api.vouchers.get.path, id],
+    queryKey: ["voucher", id],
     queryFn: async () => {
-      if (!id) return null;
-      const url = buildUrl(api.vouchers.get.path, { id });
-      const res = await fetch(url, { credentials: "include" });
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error("Error al obtener el voucher");
-      const data = await res.json();
-      return parseWithLogging(api.vouchers.get.responses[200], data, "vouchers.get");
+      const res = await fetch(`/api/vouchers/${id}`);
+      if (!res.ok) throw new Error("Error fetching voucher");
+      return res.json();
     },
     enabled: !!id,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 }
 

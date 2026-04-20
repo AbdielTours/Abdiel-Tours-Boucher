@@ -45,13 +45,25 @@ export default function Dashboard() {
           title="Gestión de Vouchers" 
           description="Administra y genera comprobantes de viaje para tus clientes."
           action={
-            <Link 
-              href="/vouchers/new" 
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Nuevo Voucher</span>
-            </Link>
+            <div className="flex gap-3">
+              
+              {/* BOTÓN INTERNACIONAL */}
+              <Link 
+                href="/vouchers/new?type=internacional" 
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-blue-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+              >
+                ✈️ Internacional
+              </Link>
+
+              {/* BOTÓN NACIONAL */}
+              <Link 
+                href="/vouchers/new?type=nacional" 
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-green-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+              >
+                🏨 Nacional
+              </Link>
+
+            </div>
           }
         />
 
@@ -79,13 +91,23 @@ export default function Dashboard() {
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
               Crea tu primer voucher para comenzar a gestionar las reservas de tus clientes.
             </p>
-            <Link 
-              href="/vouchers/new" 
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Crear mi primer voucher</span>
-            </Link>
+
+            {/* TAMBIÉN AQUÍ PARA PRIMER VOUCHER */}
+            <div className="flex gap-3 justify-center">
+              <Link 
+                href="/vouchers/new?type=internacional" 
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-blue-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+              >
+                ✈️ Internacional
+              </Link>
+
+              <Link 
+                href="/vouchers/new?type=nacional" 
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-green-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+              >
+                🏨 Nacional
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
