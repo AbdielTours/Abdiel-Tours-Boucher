@@ -76,7 +76,7 @@ export default function PrintView() {
             Agencia de Viajes y Turismo
           </p>
           <h2 className="text-2xl font-bold text-blue-700 mt-4">
-            CUPÓN {voucher.destination}
+            VOUCHER {voucher.destination}
           </h2>
         </div>
 
