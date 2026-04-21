@@ -89,22 +89,22 @@ export default function PrintView() {
         </div>
 
         {/* INFO PRINCIPAL */}
-        <className="grid grid-cols-2 gap-y-2 text-sm mt-4">
+        <div className="grid grid-cols-2 gap-y-4 text-sm mt-6">
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">HUÉSPED:</span>
-          <span className="font-medium text-gray-900">{voucher.guestName}</span>
+          <span className="font-semibold text-gray-800">{voucher.guestName}</span>
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">DESTINO:</span>
-          <span className="font-medium text-gray-900">{voucher.destination}</span>
+          <span className="font-semibold text-gray-800">{voucher.destination}</span>
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">PAÍS:</span>
-          <span className="font-medium text-gray-900">{voucher.country}</span>
+          <span className="font-semibold text-gray-800">{voucher.country}</span>
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">CANTIDAD:</span>
-          <span className="font-medium text-gray-900">{voucher.guestCount}</span>
+          <span className="font-semibold text-gray-800">{voucher.guestCount}</span>
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">ESTADÍA:</span>
-          <span className="font-medium text-gray-900">{voucher.stayDates}</span>
+          <span className="font-semibold text-gray-800">{voucher.stayDates}</span>
 
           <span className="text-blue-700 text-xs tracking-wide font-bold">LOCALIZADOR:</span>
           <span>{voucher.locator || "-"}</span>
@@ -140,21 +140,15 @@ export default function PrintView() {
         </div>
 
         {/* FOOTER */}
-<div className="text-center mt-12 text-sm border-t pt-4">
+        <div className="text-center mt-10 text-sm">
+          <p className="text-red-600">
+            Encargada: Antonia De los Santos | (829) 629-6480
+          </p>
 
-  <p className="text-gray-600">
-    Encargada: Antonia De los Santos | (829) 629-6480
-  </p>
-
-  <p className="text-red-600 font-semibold mt-2">
-    GRACIAS POR ELEGIR ABDIELTOURS
-  </p>
-
-  <p className="text-xs text-gray-400 mt-2">
-    Documento válido para fines de confirmación de servicios turísticos
-  </p>
-
-</div>
+          <p className="text-red-500 font-bold mt-1">
+            GRACIAS POR ELEGIR ABDIELTOURS
+          </p>
+        </div>
 
       </div>
     </div>
