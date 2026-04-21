@@ -88,37 +88,55 @@ export default function PrintView() {
           <div className="h-[2px] bg-gradient-to-r from-blue-700 to-blue-400 my-6"></div>
         </div>
 
-        {/* INFO PRINCIPAL */}
-        <div className="grid grid-cols-[140px_1fr] gap-y-2 text-sm mt-4">
+        {/* 🔵 DATOS DEL HOTEL */}
+<div className="mt-4">
 
-          <span className="text-blue-700 text-xs font-bold">HUÉSPED:</span>
-          <span className="font-semibold text-gray-900">{voucher.guestName}</span>
+  <h3 className="text-blue-700 font-bold text-sm mb-2 border-b pb-1">
+    DATOS DEL HOTEL
+  </h3>
 
-          <span className="text-blue-700 text-xs font-bold">DESTINO:</span>
-          <span className="font-semibold text-gray-900">{voucher.destination}</span>
+  <div className="grid grid-cols-[140px_1fr] gap-y-2 gap-x-2 text-sm">
 
-          <span className="text-blue-700 text-xs font-bold">PAÍS:</span>
-          <span className="font-semibold text-gray-900">{voucher.country}</span>
+    <span className="text-blue-700 text-xs font-bold">HOTEL:</span>
+    <span className="font-semibold">{voucher.destination}</span>
 
-          <span className="text-blue-700 text-xs font-bold">CANTIDAD:</span>
-          <span className="font-semibold text-gray-900">{voucher.guestCount}</span>
+    <span className="text-blue-700 text-xs font-bold">DESTINO:</span>
+    <span>{voucher.country}</span>
 
-          <span className="text-blue-700 text-xs font-bold">ESTADÍA:</span>
-          <span className="font-semibold text-gray-900">{voucher.stayDates}</span>
+    <span className="text-blue-700 text-xs font-bold">TELÉFONO:</span>
+    <span>{voucher.phone || "-"}</span>
 
-          <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
-          <span className="font-medium text-gray-900">{voucher.locator || "-"}</span>
+    <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
+    <span>{voucher.locator || "-"}</span>
 
-          <span className="text-blue-700 text-xs font-bold">TELÉFONO:</span>
-          <span className="font-medium text-gray-900">{voucher.phone || "-"}</span>
+  </div>
+</div>
 
-          <span className="text-blue-700 text-xs font-bold">PLAN:</span>
-          <span className="font-medium text-gray-900">{voucher.plan || "-"}</span>
+{/* 🔵 DATOS DEL CLIENTE */}
+<div className="mt-6">
 
-          <span className="text-blue-700 text-xs font-bold">CATEGORÍA:</span>
-          <span className="font-medium text-gray-900">{voucher.category || "-"}</span>
+  <h3 className="text-blue-700 font-bold text-sm mb-2 border-b pb-1">
+    DATOS DEL CLIENTE
+  </h3>
 
-        </div>
+  <div className="grid grid-cols-[140px_1fr] gap-y-2 gap-x-2 text-sm">
+
+    <span className="text-blue-700 text-xs font-bold">HUÉSPED:</span>
+    <span className="font-semibold">{voucher.guestName}</span>
+
+    <span className="text-blue-700 text-xs font-bold">CANTIDAD:</span>
+    <span>{voucher.guestCount}</span>
+
+    <span className="text-blue-700 text-xs font-bold">ESTADÍA:</span>
+    <span>{voucher.stayDates}</span>
+
+    <span className="text-blue-700 text-xs font-bold">PLAN:</span>
+    <span>{voucher.plan || "-"}</span>
+
+    <span className="text-blue-700 text-xs font-bold">CATEGORÍA:</span>
+    <span>{voucher.category || "-"}</span>
+
+  </div>
 
         {/* SERVICIOS */}
         <div className="mt-8">
