@@ -110,7 +110,6 @@ export default function PrintView() {
     <span>{voucher.locator || "-"}</span>
 
   </div>
-</div>
 
 {/* 🔵 DATOS DEL CLIENTE */}
 <div className="mt-6">
