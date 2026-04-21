@@ -109,6 +109,7 @@ export default function PrintView() {
     <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
     <span>{voucher.locator || "-"}</span>
 
+      </div>
   </div>
 
 {/* 🔵 DATOS DEL CLIENTE */}
@@ -136,6 +137,7 @@ export default function PrintView() {
     <span>{voucher.category || "-"}</span>
 
   </div>
+</div>
 
         {/* SERVICIOS */}
         <div className="mt-8">
