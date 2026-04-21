@@ -89,33 +89,33 @@ export default function PrintView() {
         </div>
 
         {/* INFO PRINCIPAL */}
-        <div className="grid grid-cols-2 gap-y-4 text-sm mt-6">
+        <div className="grid grid-cols-2 gap-y-2 text-sm mt-4">
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">HUÉSPED:</span>
+          <span className="text-blue-700 text-xs font-bold">HUÉSPED:</span>
           <span className="font-semibold text-gray-800">{voucher.guestName}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">DESTINO:</span>
+          <span className="text-blue-700 text-xs font-bold">DESTINO:</span>
           <span className="font-semibold text-gray-800">{voucher.destination}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">PAÍS:</span>
+          <span className="text-blue-700 text-xs font-bold">PAÍS:</span>
           <span className="font-semibold text-gray-800">{voucher.country}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">CANTIDAD:</span>
+          <span className="text-blue-700 text-xs font-bold">CANTIDAD:</span>
           <span className="font-semibold text-gray-800">{voucher.guestCount}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">ESTADÍA:</span>
+          <span className="text-blue-700 text-xs font-bold">ESTADÍA:</span>
           <span className="font-semibold text-gray-800">{voucher.stayDates}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">LOCALIZADOR:</span>
+          <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
           <span>{voucher.locator || "-"}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">TELÉFONO:</span>
+          <span className="text-blue-700 text-xs font-bold">TELÉFONO:</span>
           <span>{voucher.phone || "-"}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">PLAN:</span>
+          <span className="text-blue-700 text-xs font-bold">PLAN:</span>
           <span>{voucher.plan || "-"}</span>
 
-          <span className="text-blue-700 text-xs tracking-wide font-bold">CATEGORÍA:</span>
+          <span className="text-blue-700 text-xs font-bold">CATEGORÍA:</span>
           <span>{voucher.category || "-"}</span>
 
         </div>
