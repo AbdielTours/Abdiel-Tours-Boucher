@@ -67,49 +67,70 @@ export default function PrintView() {
       </div>
 
       {/* DOCUMENTO */}
-      <div className="max-w-4xl mx-auto bg-white print-container p-10">
+      <div className="max-w-4xl mx-auto bg-white print-container p-10 shadow-sm">
 
         {/* HEADER */}
-        <div className="text-center border-b pb-6 mb-6">
+        <div className="text-center">
           <img src={logoImage} className="mx-auto h-24 mb-2" />
-          <p className="text-xs uppercase text-gray-500">
+
+          <p className="text-xs uppercase tracking-widest text-gray-500">
             Agencia de Viajes y Turismo
           </p>
-          <h2 className="text-2xl font-bold text-blue-700 mt-4">
+
+          <h2 className="text-2xl font-bold text-blue-700 mt-3">
             VOUCHER {voucher.destination}
           </h2>
+
+          <p className="text-xs text-gray-400 mt-1">
+            DOCUMENTO OFICIAL DE VIAJE
+          </p>
+
+          <hr className="border-t-2 border-blue-700 my-6" />
         </div>
 
-        {/* DATOS */}
-        <table className="w-full mb-8">
-          <tbody>
+        {/* INFO PRINCIPAL */}
+        <div className="grid grid-cols-2 gap-y-3 text-sm">
 
-            <tr><td className="font-bold text-blue-700">Huésped:</td><td>{voucher.guestName}</td></tr>
-            <tr><td className="font-bold text-blue-700">Destino:</td><td>{voucher.destination}</td></tr>
-            <tr><td className="font-bold text-blue-700">País:</td><td>{voucher.country}</td></tr>
-            <tr><td className="font-bold text-blue-700">Cantidad:</td><td>{voucher.guestCount}</td></tr>
-            <tr><td className="font-bold text-blue-700">Estadía:</td><td>{voucher.stayDates}</td></tr>
+          <span className="font-semibold text-blue-700">HUÉSPED:</span>
+          <span className="font-medium">{voucher.guestName}</span>
 
-            {/* 🔥 ARREGLADO AQUÍ */}
+          <span className="font-semibold text-blue-700">DESTINO:</span>
+          <span className="font-medium uppercase">{voucher.destination}</span>
 
-            <tr><td className="font-bold text-blue-700">Localizador:</td><td>{voucher.locator || ""}</td></tr>
-            <tr><td className="font-bold text-blue-700">Teléfono:</td><td>{voucher.phone || ""}</td></tr>
-            <tr><td className="font-bold text-blue-700">Plan:</td><td>{voucher.plan || ""}</td></tr>
-            <tr><td className="font-bold text-blue-700">Categoría:</td><td>{voucher.category || ""}</td></tr>
+          <span className="font-semibold text-blue-700">PAÍS:</span>
+          <span className="font-medium uppercase">{voucher.country}</span>
 
-          </tbody>
-        </table>
+          <span className="font-semibold text-blue-700">CANTIDAD:</span>
+          <span className="font-medium">{voucher.guestCount}</span>
+
+          <span className="font-semibold text-blue-700">ESTADÍA:</span>
+          <span className="font-medium">{voucher.stayDates}</span>
+
+          <span className="font-semibold text-blue-700">LOCALIZADOR:</span>
+          <span>{voucher.locator || "-"}</span>
+
+          <span className="font-semibold text-blue-700">TELÉFONO:</span>
+          <span>{voucher.phone || "-"}</span>
+
+          <span className="font-semibold text-blue-700">PLAN:</span>
+          <span>{voucher.plan || "-"}</span>
+
+          <span className="font-semibold text-blue-700">CATEGORÍA:</span>
+          <span>{voucher.category || "-"}</span>
+
+        </div>
 
         {/* SERVICIOS */}
-        <div>
-          <h3 className="font-bold text-blue-700 mb-2">
-            Que incluye nuestros Servicios:
+        <div className="mt-8">
+          <h3 className="text-blue-700 font-bold border-b pb-1">
+            SERVICIOS INCLUIDOS
           </h3>
 
           {voucher.services.map((s, i) => (
-            <div key={i}>
-              <b>{s.title}</b>
-              <ul className="list-disc pl-5">
+            <div key={i} className="mt-3">
+              <p className="font-semibold">{s.title}</p>
+
+              <ul className="list-disc ml-6 mt-1 space-y-1 text-sm">
                 {s.items.map((it, j) => (
                   <li key={j}>{it}</li>
                 ))}
@@ -123,7 +144,8 @@ export default function PrintView() {
           <p className="text-red-600">
             Encargada: Antonia De los Santos | (829) 629-6480
           </p>
-          <p className="text-red-500 font-bold">
+
+          <p className="text-red-500 font-bold mt-1">
             GRACIAS POR ELEGIR ABDIELTOURS
           </p>
         </div>
