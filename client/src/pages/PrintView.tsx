@@ -85,37 +85,37 @@ export default function PrintView() {
             DOCUMENTO OFICIAL DE VIAJE
           </p>
 
-          <hr className="border-t-2 border-blue-700 my-6" />
+          <div className="h-[2px] bg-gradient-to-r from-blue-700 to-blue-400 my-6"></div>
         </div>
 
         {/* INFO PRINCIPAL */}
-        <div className="grid grid-cols-2 gap-y-3 text-sm">
+        <div className="grid grid-cols-2 gap-y-4 text-sm mt-6">
 
-          <span className="font-semibold text-blue-700">HUÉSPED:</span>
-          <span className="font-medium">{voucher.guestName}</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">HUÉSPED:</span>
+          <span className="font-semibold text-gray-800">{voucher.guestName}</span>
 
-          <span className="font-semibold text-blue-700">DESTINO:</span>
-          <span className="font-medium uppercase">{voucher.destination}</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">DESTINO:</span>
+          <span className="font-semibold text-gray-800">{voucher.destination}</span>
 
-          <span className="font-semibold text-blue-700">PAÍS:</span>
-          <span className="font-medium uppercase">{voucher.country}</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">PAÍS:</span>
+          <span className="font-semibold text-gray-800">{voucher.country}</span>
 
-          <span className="font-semibold text-blue-700">CANTIDAD:</span>
-          <span className="font-medium">{voucher.guestCount}</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">CANTIDAD:</span>
+          <span className="font-semibold text-gray-800">{voucher.guestCount}</span>
 
-          <span className="font-semibold text-blue-700">ESTADÍA:</span>
-          <span className="font-medium">{voucher.stayDates}</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">ESTADÍA:</span>
+          <span className="font-semibold text-gray-800">{voucher.stayDates}</span>
 
-          <span className="font-semibold text-blue-700">LOCALIZADOR:</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">LOCALIZADOR:</span>
           <span>{voucher.locator || "-"}</span>
 
-          <span className="font-semibold text-blue-700">TELÉFONO:</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">TELÉFONO:</span>
           <span>{voucher.phone || "-"}</span>
 
-          <span className="font-semibold text-blue-700">PLAN:</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">PLAN:</span>
           <span>{voucher.plan || "-"}</span>
 
-          <span className="font-semibold text-blue-700">CATEGORÍA:</span>
+          <span className="text-blue-700 text-xs tracking-wide font-bold">CATEGORÍA:</span>
           <span>{voucher.category || "-"}</span>
 
         </div>
@@ -128,7 +128,7 @@ export default function PrintView() {
 
           {voucher.services.map((s, i) => (
             <div key={i} className="mt-3">
-              <p className="font-semibold">{s.title}</p>
+              <p className="font-semibold text-gray-900">{s.title}</p>
 
               <ul className="list-disc ml-6 mt-1 space-y-1 text-sm">
                 {s.items.map((it, j) => (
@@ -140,15 +140,21 @@ export default function PrintView() {
         </div>
 
         {/* FOOTER */}
-        <div className="text-center mt-10 text-sm">
-          <p className="text-red-600">
-            Encargada: Antonia De los Santos | (829) 629-6480
-          </p>
+<div className="text-center mt-12 text-sm border-t pt-4">
 
-          <p className="text-red-500 font-bold mt-1">
-            GRACIAS POR ELEGIR ABDIELTOURS
-          </p>
-        </div>
+  <p className="text-gray-600">
+    Encargada: Antonia De los Santos | (829) 629-6480
+  </p>
+
+  <p className="text-red-600 font-semibold mt-2">
+    GRACIAS POR ELEGIR ABDIELTOURS
+  </p>
+
+  <p className="text-xs text-gray-400 mt-2">
+    Documento válido para fines de confirmación de servicios turísticos
+  </p>
+
+</div>
 
       </div>
     </div>
