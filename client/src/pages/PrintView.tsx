@@ -107,16 +107,16 @@ export default function PrintView() {
           <span className="font-semibold text-gray-800">{voucher.stayDates}</span>
 
           <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
-          <span>{voucher.locator || "-"}</span>
+          <span className="font-medium text-gray-900">{voucher.locator || "-"}</span>
 
           <span className="text-blue-700 text-xs font-bold">TELÉFONO:</span>
-          <span>{voucher.phone || "-"}</span>
+          <span className="font-medium text-gray-900">{voucher.phone || "-"}</span>
 
           <span className="text-blue-700 text-xs font-bold">PLAN:</span>
-          <span>{voucher.plan || "-"}</span>
+          <span className="font-medium text-gray-900">{voucher.plan || "-"}</span>
 
           <span className="text-blue-700 text-xs font-bold">CATEGORÍA:</span>
-          <span>{voucher.category || "-"}</span>
+          <span className="font-medium text-gray-900">{voucher.category || "-"}</span>
 
         </div>
 
