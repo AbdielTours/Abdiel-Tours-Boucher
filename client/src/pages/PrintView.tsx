@@ -89,22 +89,22 @@ export default function PrintView() {
         </div>
 
         {/* INFO PRINCIPAL */}
-        <div className="grid grid-cols-2 gap-y-2 text-sm mt-4">
+        <div className="grid grid-cols-[140px_1fr] gap-y-2 text-sm mt-4">
 
           <span className="text-blue-700 text-xs font-bold">HUÉSPED:</span>
-          <span className="font-semibold text-gray-800">{voucher.guestName}</span>
+          <span className="font-semibold text-gray-900">{voucher.guestName}</span>
 
           <span className="text-blue-700 text-xs font-bold">DESTINO:</span>
-          <span className="font-semibold text-gray-800">{voucher.destination}</span>
+          <span className="font-semibold text-gray-900">{voucher.destination}</span>
 
           <span className="text-blue-700 text-xs font-bold">PAÍS:</span>
-          <span className="font-semibold text-gray-800">{voucher.country}</span>
+          <span className="font-semibold text-gray-900">{voucher.country}</span>
 
           <span className="text-blue-700 text-xs font-bold">CANTIDAD:</span>
-          <span className="font-semibold text-gray-800">{voucher.guestCount}</span>
+          <span className="font-semibold text-gray-900">{voucher.guestCount}</span>
 
           <span className="text-blue-700 text-xs font-bold">ESTADÍA:</span>
-          <span className="font-semibold text-gray-800">{voucher.stayDates}</span>
+          <span className="font-semibold text-gray-900">{voucher.stayDates}</span>
 
           <span className="text-blue-700 text-xs font-bold">LOCALIZADOR:</span>
           <span className="font-medium text-gray-900">{voucher.locator || "-"}</span>
