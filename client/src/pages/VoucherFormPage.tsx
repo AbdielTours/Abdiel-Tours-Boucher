@@ -1,12 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { useRoute, Link } from "wouter";
+import { Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
 import { useCreateVoucher } from "@/hooks/use-vouchers";
 import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
+
 import {
   ArrowLeft,
   Trash2,
@@ -14,9 +16,11 @@ import {
 } from "lucide-react";
 
 const formSchema = z.object({
-  guestNames: z.array(z.object({
-    name: z.string()
-  })),
+  guestNames: z.array(
+    z.object({
+      name: z.string()
+    })
+  ),
 
   destination: z.string(),
   country: z.string(),
@@ -24,6 +28,7 @@ const formSchema = z.object({
   guestCount: z.coerce.number(),
 
   stayDates: z.string().optional(),
+
   checkIn: z.string().optional(),
   checkOut: z.string().optional(),
 
@@ -32,12 +37,16 @@ const formSchema = z.object({
   plan: z.string().optional(),
   category: z.string().optional(),
 
-  services: z.array(z.object({
-    title: z.string(),
-    items: z.array(z.object({
-      value: z.string()
-    }))
-  }))
+  services: z.array(
+    z.object({
+      title: z.string(),
+      items: z.array(
+        z.object({
+          value: z.string()
+        })
+      )
+    })
+  )
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -45,8 +54,6 @@ type FormValues = z.infer<typeof formSchema>;
 export default function VoucherFormPage() {
 
   const queryClient = useQueryClient();
-
-  const [, params] = useRoute("/vouchers/:id/edit");
 
   const { toast } = useToast();
 
@@ -71,6 +78,7 @@ export default function VoucherFormPage() {
       guestCount: 1,
 
       stayDates: "",
+
       checkIn: "",
       checkOut: "",
 
@@ -106,10 +114,14 @@ export default function VoucherFormPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
+
     try {
 
       const payload = {
-        guestName: data.guestNames.map(g => g.name).join(", "),
+
+        guestName: data.guestNames
+          .map((g) => g.name)
+          .join(", "),
 
         destination: data.destination,
         country: data.country,
@@ -118,7 +130,10 @@ export default function VoucherFormPage() {
 
         stayDates:
           type === "nacional"
-            ? formatFechas(data.checkIn, data.checkOut)
+            ? formatFechas(
+                data.checkIn,
+                data.checkOut
+              )
             : data.stayDates,
 
         locator: data.locator || "",
@@ -132,7 +147,8 @@ export default function VoucherFormPage() {
         }))
       };
 
-      const created = await createMutation.mutateAsync(payload);
+      const created =
+        await createMutation.mutateAsync(payload);
 
       queryClient.invalidateQueries({
         queryKey: ["vouchers"]
@@ -154,13 +170,16 @@ export default function VoucherFormPage() {
   return (
     <div className="max-w-5xl mx-auto p-6">
 
-      <Link href="/" className="flex items-center mb-6">
+      <Link
+        href="/"
+        className="flex items-center mb-6"
+      >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Volver
       </Link>
 
       <PageHeader
-        title="Nuevo Cupón"
+        title="Nuevo Voucher"
         description={`Tipo: ${type}`}
       />
 
@@ -169,11 +188,13 @@ export default function VoucherFormPage() {
         className="space-y-8"
       >
 
-        {/* ✈️ INTERNACIONAL */}
+        {/* INTERNACIONAL */}
         {type !== "nacional" && (
           <>
 
+            {/* VIAJE */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
+
               <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 INFORMACIÓN DEL VIAJE
               </h3>
@@ -208,19 +229,24 @@ export default function VoucherFormPage() {
               </div>
             </div>
 
+            {/* CLIENTES */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
+
               <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 DATOS DEL CLIENTE
               </h3>
 
               {guestFields.map((field, i) => (
+
                 <div
                   key={field.id}
                   className="flex gap-2 mb-3"
                 >
 
                   <input
-                    {...form.register(`guestNames.${i}.name`)}
+                    {...form.register(
+                      `guestNames.${i}.name`
+                    )}
                     placeholder={`Nombre huésped ${i + 1}`}
                     className="flex-1 p-3 border rounded-xl"
                   />
@@ -234,19 +260,25 @@ export default function VoucherFormPage() {
                   </button>
 
                 </div>
+
               ))}
 
               <button
                 type="button"
-                onClick={() => addGuest({ name: "" })}
+                onClick={() =>
+                  addGuest({ name: "" })
+                }
                 className="text-blue-600 text-sm flex items-center gap-2"
               >
                 <PlusCircle className="w-4 h-4" />
                 Agregar huésped
               </button>
+
             </div>
 
+            {/* RESERVA */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
+
               <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 INFORMACIÓN DE RESERVA
               </h3>
@@ -278,23 +310,29 @@ export default function VoucherFormPage() {
                 />
 
               </div>
+
             </div>
 
+            {/* SERVICIOS */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
+
               <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 SERVICIOS INCLUIDOS
               </h3>
 
               {serviceFields.map((field, index) => (
+
                 <div
                   key={field.id}
                   className="mb-6 border rounded-xl p-4"
                 >
 
                   <input
-                    {...form.register(`services.${index}.title`)}
-                    className="w-full p-3 border rounded-xl mb-4"
+                    {...form.register(
+                      `services.${index}.title`
+                    )}
                     placeholder="Título del servicio"
+                    className="w-full p-3 border rounded-xl mb-4"
                   />
 
                   <ServiceItems
@@ -304,6 +342,7 @@ export default function VoucherFormPage() {
                   />
 
                 </div>
+
               ))}
 
               <button
@@ -319,20 +358,24 @@ export default function VoucherFormPage() {
                 <PlusCircle className="w-4 h-4" />
                 Agregar servicio
               </button>
+
             </div>
 
           </>
         )}
 
-        {/* 🇩🇴 NACIONAL */}
+        {/* NACIONAL */}
         {type === "nacional" && (
+
           <div className="bg-white border rounded-2xl p-6 shadow-sm">
 
             <h3 className="text-blue-700 font-bold mb-6 text-lg">
               RESERVA NACIONAL
             </h3>
 
+            {/* HOTEL */}
             <div className="mb-8">
+
               <h4 className="font-semibold text-gray-700 mb-4">
                 INFORMACIÓN DEL HOTEL
               </h4>
@@ -390,19 +433,24 @@ export default function VoucherFormPage() {
               </div>
             </div>
 
+            {/* CLIENTES */}
             <div className="mb-8">
+
               <h4 className="font-semibold text-gray-700 mb-4">
                 DATOS DEL CLIENTE
               </h4>
 
               {guestFields.map((field, i) => (
+
                 <div
                   key={field.id}
                   className="flex gap-2 mb-3"
                 >
 
                   <input
-                    {...form.register(`guestNames.${i}.name`)}
+                    {...form.register(
+                      `guestNames.${i}.name`
+                    )}
                     placeholder={`Nombre huésped ${i + 1}`}
                     className="flex-1 p-3 border rounded-xl"
                   />
@@ -416,33 +464,42 @@ export default function VoucherFormPage() {
                   </button>
 
                 </div>
+
               ))}
 
               <button
                 type="button"
-                onClick={() => addGuest({ name: "" })}
+                onClick={() =>
+                  addGuest({ name: "" })
+                }
                 className="text-blue-600 text-sm flex items-center gap-2"
               >
                 <PlusCircle className="w-4 h-4" />
                 Agregar huésped
               </button>
+
             </div>
 
+            {/* SERVICIOS */}
             <div>
+
               <h4 className="font-semibold text-gray-700 mb-4">
                 SERVICIOS INCLUIDOS
               </h4>
 
               {serviceFields.map((field, index) => (
+
                 <div
                   key={field.id}
                   className="mb-6 border rounded-xl p-4"
                 >
 
                   <input
-                    {...form.register(`services.${index}.title`)}
-                    className="w-full p-3 border rounded-xl mb-4"
+                    {...form.register(
+                      `services.${index}.title`
+                    )}
                     placeholder="Título del servicio"
+                    className="w-full p-3 border rounded-xl mb-4"
                   />
 
                   <ServiceItems
@@ -452,6 +509,7 @@ export default function VoucherFormPage() {
                   />
 
                 </div>
+
               ))}
 
               <button
@@ -467,21 +525,29 @@ export default function VoucherFormPage() {
                 <PlusCircle className="w-4 h-4" />
                 Agregar servicio
               </button>
+
             </div>
 
           </div>
+
         )}
 
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-sm hover:bg-blue-700 transition-all">
-          Crear Cupón
+        <button
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-sm hover:bg-blue-700 transition-all"
+        >
+          Crear Voucher
         </button>
 
       </form>
+
     </div>
   );
 }
 
-function formatFechas(checkIn?: string, checkOut?: string) {
+function formatFechas(
+  checkIn?: string,
+  checkOut?: string
+) {
 
   if (!checkIn || !checkOut) return "";
 
@@ -522,16 +588,20 @@ function ServiceItems({
   });
 
   return (
+
     <div>
 
       {fields.map((item, i) => (
+
         <div
           key={item.id}
           className="flex gap-2 mb-2"
         >
 
           <input
-            {...register(`services.${serviceIndex}.items.${i}.value`)}
+            {...register(
+              `services.${serviceIndex}.items.${i}.value`
+            )}
             className="flex-1 p-2 border rounded-xl"
           />
 
@@ -543,11 +613,14 @@ function ServiceItems({
           </button>
 
         </div>
+
       ))}
 
       <button
         type="button"
-        onClick={() => append({ value: "" })}
+        onClick={() =>
+          append({ value: "" })
+        }
         className="text-blue-600 text-sm flex items-center gap-2 mt-2"
       >
         <PlusCircle className="w-4 h-4" />
@@ -555,6 +628,6 @@ function ServiceItems({
       </button>
 
     </div>
+
   );
 }
-```
