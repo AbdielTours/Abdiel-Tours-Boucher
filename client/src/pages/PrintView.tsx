@@ -178,7 +178,7 @@ export default function PrintView() {
   <img
     src={selloImage}
     alt="Sello"
-    className="absolute opacity-10 w-80 rotate-[-15deg] left-1/2 -translate-x-1/2 top-0"
+    className="w-[420px] opacity-[0.08] rotate-[-15deg] -mt-40"
   />
 
 </div>
