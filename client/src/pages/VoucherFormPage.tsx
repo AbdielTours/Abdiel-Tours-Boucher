@@ -1,6 +1,9 @@
+# VoucherFormPage.tsx COMPLETO
+
+    ```tsx
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { useRoute, useLocation, Link } from "wouter";
+import { useRoute, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,17 +17,24 @@ import {
 } from "lucide-react";
 
 const formSchema = z.object({
-  guestNames: z.array(z.object({ name: z.string() })),
+  guestNames: z.array(z.object({
+    name: z.string()
+  })),
+
   destination: z.string(),
   country: z.string(),
+
   guestCount: z.coerce.number(),
+
   stayDates: z.string().optional(),
   checkIn: z.string().optional(),
   checkOut: z.string().optional(),
+
   locator: z.string().optional(),
   phone: z.string().optional(),
   plan: z.string().optional(),
   category: z.string().optional(),
+
   services: z.array(z.object({
     title: z.string(),
     items: z.array(z.object({
@@ -36,12 +46,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function VoucherFormPage() {
+
   const queryClient = useQueryClient();
 
   const [, params] = useRoute("/vouchers/:id/edit");
-  const isEdit = !!params?.id;
 
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
   const createMutation = useCreateVoucher();
@@ -55,19 +64,30 @@ export default function VoucherFormPage() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+
     defaultValues: {
       guestNames: [{ name: "" }],
+
       destination: "",
       country: "",
+
       guestCount: 1,
+
       stayDates: "",
       checkIn: "",
       checkOut: "",
+
       locator: "",
       phone: "",
       plan: "",
       category: "",
-      services: [{ title: "1- TRASLADOS", items: [{ value: "" }] }]
+
+      services: [
+        {
+          title: "1- TRASLADOS",
+          items: [{ value: "" }]
+        }
+      ]
     }
   });
 
@@ -90,11 +110,13 @@ export default function VoucherFormPage() {
 
   const onSubmit = async (data: FormValues) => {
     try {
+
       const payload = {
         guestName: data.guestNames.map(g => g.name).join(", "),
 
         destination: data.destination,
         country: data.country,
+
         guestCount: data.guestCount,
 
         stayDates:
@@ -109,8 +131,8 @@ export default function VoucherFormPage() {
 
         services: data.services.map((s) => ({
           title: s.title,
-          items: s.items.map((i) => i.value),
-        })),
+          items: s.items.map((i) => i.value)
+        }))
       };
 
       const created = await createMutation.mutateAsync(payload);
@@ -119,14 +141,15 @@ export default function VoucherFormPage() {
         queryKey: ["vouchers"]
       });
 
-      window.location.href = `/vouchers/${created.id}`;
+      window.location.href = `/ vouchers / ${ created.id } `;
 
     } catch (error) {
+
       console.error(error);
 
       toast({
         title: "Error al guardar",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
@@ -140,8 +163,8 @@ export default function VoucherFormPage() {
       </Link>
 
       <PageHeader
-        title="Nuevo Voucher"
-        description={`Tipo: ${type}`}
+        title="Nuevo Cupón"
+        description={`Tipo: ${ type } `}
       />
 
       <form
@@ -153,9 +176,8 @@ export default function VoucherFormPage() {
         {type !== "nacional" && (
           <>
 
-            {/* INFORMACIÓN DEL VIAJE */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
-              <h3 className="text-blue-700 font-bold mb-4">
+              <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 INFORMACIÓN DEL VIAJE
               </h3>
 
@@ -189,9 +211,8 @@ export default function VoucherFormPage() {
               </div>
             </div>
 
-            {/* CLIENTES */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
-              <h3 className="text-blue-700 font-bold mb-4">
+              <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 DATOS DEL CLIENTE
               </h3>
 
@@ -202,14 +223,15 @@ export default function VoucherFormPage() {
                 >
 
                   <input
-                    {...form.register(`guestNames.${i}.name`)}
-                    placeholder={`Nombre ${i + 1}`}
+                    {...form.register(`guestNames.${ i }.name`)}
+                    placeholder={`Nombre huésped ${ i + 1 } `}
                     className="flex-1 p-3 border rounded-xl"
                   />
 
                   <button
                     type="button"
                     onClick={() => removeGuest(i)}
+                    className="px-3"
                   >
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </button>
@@ -220,15 +242,15 @@ export default function VoucherFormPage() {
               <button
                 type="button"
                 onClick={() => addGuest({ name: "" })}
-                className="text-blue-600 text-sm"
+                className="text-blue-600 text-sm flex items-center gap-2"
               >
-                + Agregar huésped
+                <PlusCircle className="w-4 h-4" />
+                Agregar huésped
               </button>
             </div>
 
-            {/* RESERVA */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
-              <h3 className="text-blue-700 font-bold mb-4">
+              <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 INFORMACIÓN DE RESERVA
               </h3>
 
@@ -261,21 +283,20 @@ export default function VoucherFormPage() {
               </div>
             </div>
 
-            {/* SERVICIOS */}
             <div className="bg-white border rounded-2xl p-6 shadow-sm">
-              <h3 className="text-blue-700 font-bold mb-4">
+              <h3 className="text-blue-700 font-bold mb-6 text-lg">
                 SERVICIOS INCLUIDOS
               </h3>
 
               {serviceFields.map((field, index) => (
                 <div
                   key={field.id}
-                  className="mb-5"
+                  className="mb-6 border rounded-xl p-4"
                 >
 
                   <input
-                    {...form.register(`services.${index}.title`)}
-                    className="w-full p-3 border rounded-xl mb-3"
+                    {...form.register(`services.${ index }.title`)}
+                    className="w-full p-3 border rounded-xl mb-4"
                     placeholder="Título del servicio"
                   />
 
@@ -296,9 +317,10 @@ export default function VoucherFormPage() {
                     items: [{ value: "" }]
                   })
                 }
-                className="text-blue-600 text-sm"
+                className="text-blue-600 text-sm flex items-center gap-2"
               >
-                + Agregar servicio
+                <PlusCircle className="w-4 h-4" />
+                Agregar servicio
               </button>
             </div>
 
@@ -307,83 +329,154 @@ export default function VoucherFormPage() {
 
         {/* 🇩🇴 NACIONAL */}
         {type === "nacional" && (
-{/* HUÉSPEDES */}
-<div className="mt-6">
-  <h3 className="text-blue-700 font-bold mb-3">
-    HUÉSPEDES
-  </h3>
+          <div className="bg-white border rounded-2xl p-6 shadow-sm">
 
-  {guestFields.map((field, i) => (
-    <div key={field.id} className="flex gap-2 mb-3">
+            <h3 className="text-blue-700 font-bold mb-6 text-lg">
+              RESERVA NACIONAL
+            </h3>
 
-      <input
-        {...form.register(`guestNames.${i}.name`)}
-        placeholder={`Nombre ${i + 1}`}
-        className="flex-1 p-3 border rounded-xl"
-      />
+            <div className="mb-8">
+              <h4 className="font-semibold text-gray-700 mb-4">
+                INFORMACIÓN DEL HOTEL
+              </h4>
 
-      <button
-        type="button"
-        onClick={() => removeGuest(i)}
-      >
-        <Trash2 className="w-4 h-4 text-red-500" />
-      </button>
+              <div className="grid grid-cols-2 gap-4">
 
-    </div>
-  ))}
+                <input
+                  {...form.register("destination")}
+                  placeholder="Hotel"
+                  className="p-3 border rounded-xl"
+                />
 
-  <button
-    type="button"
-    onClick={() => addGuest({ name: "" })}
-    className="text-blue-600 text-sm"
-  >
-    + Agregar huésped
-  </button>
-</div>
+                <input
+                  {...form.register("country")}
+                  placeholder="Destino"
+                  className="p-3 border rounded-xl"
+                />
 
-{/* SERVICIOS */}
-<div className="mt-8">
-  <h3 className="text-blue-700 font-bold mb-4">
-    SERVICIOS INCLUIDOS
-  </h3>
+                <input
+                  type="date"
+                  {...form.register("checkIn")}
+                  className="p-3 border rounded-xl"
+                />
 
-  {serviceFields.map((field, index) => (
-    <div key={field.id} className="mb-5">
+                <input
+                  type="date"
+                  {...form.register("checkOut")}
+                  className="p-3 border rounded-xl"
+                />
 
-      <input
-        {...form.register(`services.${index}.title`)}
-        className="w-full p-3 border rounded-xl mb-3"
-        placeholder="Título del servicio"
-      />
+                <input
+                  {...form.register("locator")}
+                  placeholder="Localizador"
+                  className="p-3 border rounded-xl"
+                />
 
-      <ServiceItems
-        control={form.control}
-        register={form.register}
-        serviceIndex={index}
-      />
+                <input
+                  {...form.register("phone")}
+                  placeholder="Teléfono"
+                  className="p-3 border rounded-xl"
+                />
 
-    </div>
-  ))}
+                <input
+                  {...form.register("plan")}
+                  placeholder="Plan"
+                  className="p-3 border rounded-xl"
+                />
 
-  <button
-    type="button"
-    onClick={() =>
-      appendService({
-        title: "",
-        items: [{ value: "" }]
-      })
-    }
-    className="text-blue-600 text-sm"
-  >
-    + Agregar servicio
-  </button>
-</div>
+                <input
+                  {...form.register("category")}
+                  placeholder="Categoría"
+                  className="p-3 border rounded-xl"
+                />
+
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <h4 className="font-semibold text-gray-700 mb-4">
+                DATOS DEL CLIENTE
+              </h4>
+
+              {guestFields.map((field, i) => (
+                <div
+                  key={field.id}
+                  className="flex gap-2 mb-3"
+                >
+
+                  <input
+                    {...form.register(`guestNames.${ i }.name`)}
+                    placeholder={`Nombre huésped ${ i + 1 } `}
+                    className="flex-1 p-3 border rounded-xl"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => removeGuest(i)}
+                    className="px-3"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => addGuest({ name: "" })}
+                className="text-blue-600 text-sm flex items-center gap-2"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Agregar huésped
+              </button>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-4">
+                SERVICIOS INCLUIDOS
+              </h4>
+
+              {serviceFields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="mb-6 border rounded-xl p-4"
+                >
+
+                  <input
+                    {...form.register(`services.${ index }.title`)}
+                    className="w-full p-3 border rounded-xl mb-4"
+                    placeholder="Título del servicio"
+                  />
+
+                  <ServiceItems
+                    control={form.control}
+                    register={form.register}
+                    serviceIndex={index}
+                  />
+
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() =>
+                  appendService({
+                    title: "",
+                    items: [{ value: "" }]
+                  })
+                }
+                className="text-blue-600 text-sm flex items-center gap-2"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Agregar servicio
+              </button>
+            </div>
 
           </div>
         )}
 
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-sm">
-          Crear Voucher
+        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-sm hover:bg-blue-700 transition-all">
+          Crear Cupón
         </button>
 
       </form>
@@ -392,6 +485,7 @@ export default function VoucherFormPage() {
 }
 
 function formatFechas(checkIn?: string, checkOut?: string) {
+
   if (!checkIn || !checkOut) return "";
 
   const meses = [
@@ -412,7 +506,7 @@ function formatFechas(checkIn?: string, checkOut?: string) {
   const entrada = new Date(checkIn);
   const salida = new Date(checkOut);
 
-  return `Del ${entrada.getDate()} al ${salida.getDate()} de ${meses[entrada.getMonth()]} ${entrada.getFullYear()}`;
+  return `Del ${ entrada.getDate() } al ${ salida.getDate() } de ${ meses[entrada.getMonth()] } ${ entrada.getFullYear() } `;
 }
 
 function ServiceItems({
@@ -427,7 +521,7 @@ function ServiceItems({
     remove
   } = useFieldArray({
     control,
-    name: `services.${serviceIndex}.items`
+    name: `services.${ serviceIndex }.items`
   });
 
   return (
@@ -440,7 +534,7 @@ function ServiceItems({
         >
 
           <input
-            {...register(`services.${serviceIndex}.items.${i}.value`)}
+            {...register(`services.${ serviceIndex }.items.${ i }.value`)}
             className="flex-1 p-2 border rounded-xl"
           />
 
@@ -457,11 +551,13 @@ function ServiceItems({
       <button
         type="button"
         onClick={() => append({ value: "" })}
-        className="text-blue-600 text-sm"
+        className="text-blue-600 text-sm flex items-center gap-2 mt-2"
       >
-        + Item
+        <PlusCircle className="w-4 h-4" />
+        Agregar item
       </button>
 
     </div>
   );
 }
+```
