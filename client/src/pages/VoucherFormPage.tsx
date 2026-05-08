@@ -377,12 +377,16 @@ services:
                   className="mb-6 border rounded-xl p-4"
                 >
 
-                  <input
-                    {...form.register(
-                      `services.${index}.title`
-                    )}
-                    placeholder="Título del servicio"
-                    className="w-full p-3 border rounded-xl mb-4"
+<input
+  {...form.register(
+    `services.${index}.title`
+  )}
+  placeholder="Título del servicio"
+  className={`w-full p-3 border rounded-xl mb-4 font-bold ${
+    field.title === "POLÍTICAS Y CONDICIONES"
+      ? "text-red-600"
+      : "text-blue-700"
+  }`}
                   />
 
                   <ServiceItems
