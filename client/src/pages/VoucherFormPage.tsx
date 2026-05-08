@@ -1,6 +1,6 @@
 # VoucherFormPage.tsx COMPLETO
 
-    ```tsx
+```tsx
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
@@ -141,7 +141,7 @@ export default function VoucherFormPage() {
         queryKey: ["vouchers"]
       });
 
-      window.location.href = `/ vouchers / ${ created.id } `;
+      window.location.href = `/vouchers/${created.id}`;
 
     } catch (error) {
 
@@ -164,7 +164,7 @@ export default function VoucherFormPage() {
 
       <PageHeader
         title="Nuevo Cupón"
-        description={`Tipo: ${ type } `}
+        description={`Tipo: ${type}`}
       />
 
       <form
@@ -223,8 +223,8 @@ export default function VoucherFormPage() {
                 >
 
                   <input
-                    {...form.register(`guestNames.${ i }.name`)}
-                    placeholder={`Nombre huésped ${ i + 1 } `}
+                    {...form.register(`guestNames.${i}.name`)}
+                    placeholder={`Nombre huésped ${i + 1}`}
                     className="flex-1 p-3 border rounded-xl"
                   />
 
@@ -295,7 +295,7 @@ export default function VoucherFormPage() {
                 >
 
                   <input
-                    {...form.register(`services.${ index }.title`)}
+                    {...form.register(`services.${index}.title`)}
                     className="w-full p-3 border rounded-xl mb-4"
                     placeholder="Título del servicio"
                   />
@@ -405,8 +405,8 @@ export default function VoucherFormPage() {
                 >
 
                   <input
-                    {...form.register(`guestNames.${ i }.name`)}
-                    placeholder={`Nombre huésped ${ i + 1 } `}
+                    {...form.register(`guestNames.${i}.name`)}
+                    placeholder={`Nombre huésped ${i + 1}`}
                     className="flex-1 p-3 border rounded-xl"
                   />
 
@@ -443,7 +443,7 @@ export default function VoucherFormPage() {
                 >
 
                   <input
-                    {...form.register(`services.${ index }.title`)}
+                    {...form.register(`services.${index}.title`)}
                     className="w-full p-3 border rounded-xl mb-4"
                     placeholder="Título del servicio"
                   />
@@ -506,7 +506,7 @@ function formatFechas(checkIn?: string, checkOut?: string) {
   const entrada = new Date(checkIn);
   const salida = new Date(checkOut);
 
-  return `Del ${ entrada.getDate() } al ${ salida.getDate() } de ${ meses[entrada.getMonth()] } ${ entrada.getFullYear() } `;
+  return `Del ${entrada.getDate()} al ${salida.getDate()} de ${meses[entrada.getMonth()]} ${entrada.getFullYear()}`;
 }
 
 function ServiceItems({
@@ -521,7 +521,7 @@ function ServiceItems({
     remove
   } = useFieldArray({
     control,
-    name: `services.${ serviceIndex }.items`
+    name: `services.${serviceIndex}.items`
   });
 
   return (
@@ -534,7 +534,7 @@ function ServiceItems({
         >
 
           <input
-            {...register(`services.${ serviceIndex }.items.${ i }.value`)}
+            {...register(`services.${serviceIndex}.items.${i}.value`)}
             className="flex-1 p-2 border rounded-xl"
           />
 
