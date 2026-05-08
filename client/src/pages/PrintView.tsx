@@ -147,9 +147,23 @@ export default function PrintView() {
 
           {voucher.services.map((s, i) => (
             <div key={i} className="mt-3">
-              <p className="font-semibold text-gray-900">{s.title}</p>
+              <p
+  className={`font-bold text-center text-lg ${
+    s.title === "POLÍTICAS Y CONDICIONES"
+      ? "text-red-600"
+      : "text-blue-700"
+  }`}
+>
+  {s.title}
+</p>
 
-              <ul className="list-disc ml-6 mt-1 space-y-1 text-sm">
+              <ul
+  className={`mt-2 space-y-2 text-sm ${
+    s.title === "POLÍTICAS Y CONDICIONES"
+      ? "list-decimal ml-8 text-gray-700"
+      : "list-disc ml-6"
+  }`}
+>
                 {s.items.map((it, j) => (
                   <li key={j}>{it}</li>
                 ))}
