@@ -4,7 +4,7 @@ import { useRoute, useLocation, Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useVoucher, useCreateVoucher } from "@/hooks/use-vouchers";
+import { useCreateVoucher } from "@/hooks/use-vouchers";
 import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -71,54 +71,59 @@ export default function VoucherFormPage() {
     }
   });
 
-  const { fields: guestFields, append: addGuest, remove: removeGuest } = useFieldArray({
+  const {
+    fields: guestFields,
+    append: addGuest,
+    remove: removeGuest
+  } = useFieldArray({
     control: form.control,
     name: "guestNames"
   });
 
-  const { fields: serviceFields, append: appendService } = useFieldArray({
+  const {
+    fields: serviceFields,
+    append: appendService
+  } = useFieldArray({
     control: form.control,
     name: "services"
   });
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const stayDatesFormatted =
-        type === "nacional"
-          ? formatFechas(data.checkIn, data.checkOut)
-          : data.stayDates;
-
       const payload = {
-  guestName: data.guestNames.map(g => g.name).join(", "), // 🔥 importante
+        guestName: data.guestNames.map(g => g.name).join(", "),
 
-  destination: data.destination,
-  country: data.country,
-  guestCount: data.guestCount,
+        destination: data.destination,
+        country: data.country,
+        guestCount: data.guestCount,
 
-  stayDates:
-    type === "nacional"
-      ? formatFechas(data.checkIn, data.checkOut)
-      : data.stayDates,
+        stayDates:
+          type === "nacional"
+            ? formatFechas(data.checkIn, data.checkOut)
+            : data.stayDates,
 
-  // 🔥 ESTOS SOLO SI EXISTEN EN TU SISTEMA
-  locator: data.locator || "",
-  phone: data.phone || "",
-  plan: data.plan || "",
-  category: data.category || "",
+        locator: data.locator || "",
+        phone: data.phone || "",
+        plan: data.plan || "",
+        category: data.category || "",
 
-  services: data.services.map((s) => ({
-    title: s.title,
-    items: s.items.map((i) => i.value),
-  })),
-};
+        services: data.services.map((s) => ({
+          title: s.title,
+          items: s.items.map((i) => i.value),
+        })),
+      };
 
       const created = await createMutation.mutateAsync(payload);
 
-      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      queryClient.invalidateQueries({
+        queryKey: ["vouchers"]
+      });
 
       window.location.href = `/vouchers/${created.id}`;
+
     } catch (error) {
       console.error(error);
+
       toast({
         title: "Error al guardar",
         variant: "destructive",
@@ -127,82 +132,243 @@ export default function VoucherFormPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-5xl mx-auto p-6">
 
       <Link href="/" className="flex items-center mb-6">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Volver
       </Link>
 
-      <PageHeader title="Nuevo Voucher" description={`Tipo: ${type}`} />
+      <PageHeader
+        title="Nuevo Voucher"
+        description={`Tipo: ${type}`}
+      />
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8"
+      >
 
-        {/* HUÉSPEDES */}
-        <div>
-          <h3 className="font-semibold mb-2">Huéspedes</h3>
+        {/* ✈️ INTERNACIONAL */}
+        {type !== "nacional" && (
+          <>
 
-          {guestFields.map((field, i) => (
-            <div key={field.id} className="flex gap-2 mb-2">
-              <input
-                {...form.register(`guestNames.${i}.name`)}
-                placeholder={`Nombre ${i + 1}`}
-                className="flex-1 p-2 border rounded"
-              />
-              <button type="button" onClick={() => removeGuest(i)}>
-                <Trash2 className="w-4 h-4 text-red-500" />
+            {/* INFORMACIÓN DEL VIAJE */}
+            <div className="bg-white border rounded-2xl p-6 shadow-sm">
+              <h3 className="text-blue-700 font-bold mb-4">
+                INFORMACIÓN DEL VIAJE
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4">
+
+                <input
+                  {...form.register("destination")}
+                  placeholder="Destino"
+                  className="p-3 border rounded-xl"
+                />
+
+                <input
+                  {...form.register("country")}
+                  placeholder="País / Ciudad"
+                  className="p-3 border rounded-xl"
+                />
+
+                <input
+                  {...form.register("stayDates")}
+                  placeholder="Fechas"
+                  className="p-3 border rounded-xl"
+                />
+
+                <input
+                  type="number"
+                  {...form.register("guestCount")}
+                  placeholder="Cantidad huéspedes"
+                  className="p-3 border rounded-xl"
+                />
+
+              </div>
+            </div>
+
+            {/* CLIENTES */}
+            <div className="bg-white border rounded-2xl p-6 shadow-sm">
+              <h3 className="text-blue-700 font-bold mb-4">
+                DATOS DEL CLIENTE
+              </h3>
+
+              {guestFields.map((field, i) => (
+                <div
+                  key={field.id}
+                  className="flex gap-2 mb-3"
+                >
+
+                  <input
+                    {...form.register(`guestNames.${i}.name`)}
+                    placeholder={`Nombre ${i + 1}`}
+                    className="flex-1 p-3 border rounded-xl"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => removeGuest(i)}
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => addGuest({ name: "" })}
+                className="text-blue-600 text-sm"
+              >
+                + Agregar huésped
               </button>
             </div>
-          ))}
 
-          <button type="button" onClick={() => addGuest({ name: "" })}>
-            <PlusCircle className="w-4 h-4 inline mr-1" />
-            Agregar nombre
-          </button>
-        </div>
+            {/* RESERVA */}
+            <div className="bg-white border rounded-2xl p-6 shadow-sm">
+              <h3 className="text-blue-700 font-bold mb-4">
+                INFORMACIÓN DE RESERVA
+              </h3>
 
-        {/* INFO EXTRA */}
-        <div className="grid grid-cols-2 gap-4">
-          <input {...form.register("locator")} placeholder="Localizador" className="p-2 border rounded"/>
-          <input {...form.register("phone")} placeholder="Teléfono" className="p-2 border rounded"/>
-          <input {...form.register("plan")} placeholder="Plan" className="p-2 border rounded"/>
-          <input {...form.register("category")} placeholder="Categoría" className="p-2 border rounded"/>
-        </div>
+              <div className="grid grid-cols-2 gap-4">
 
-        {/* DESTINO */}
-        <div className="grid grid-cols-2 gap-4">
-          <input {...form.register("destination")} placeholder="Destino / Hotel" className="p-2 border rounded"/>
-          <input {...form.register("country")} placeholder="País / Ciudad" className="p-2 border rounded"/>
-          <input type="number" {...form.register("guestCount")} className="p-2 border rounded"/>
+                <input
+                  {...form.register("locator")}
+                  placeholder="Localizador"
+                  className="p-3 border rounded-xl"
+                />
 
-          {type === "nacional" ? (
-            <>
-              <input type="date" {...form.register("checkIn")} className="p-2 border rounded"/>
-              <input type="date" {...form.register("checkOut")} className="p-2 border rounded"/>
-            </>
-          ) : (
-            <input {...form.register("stayDates")} placeholder="Fechas" className="p-2 border rounded"/>
-          )}
-        </div>
+                <input
+                  {...form.register("phone")}
+                  placeholder="Teléfono"
+                  className="p-3 border rounded-xl"
+                />
 
-        {/* SERVICIOS */}
-        <div>
-          <h3 className="font-semibold mb-2">Servicios</h3>
+                <input
+                  {...form.register("plan")}
+                  placeholder="Plan"
+                  className="p-3 border rounded-xl"
+                />
 
-          {serviceFields.map((field, index) => (
-            <div key={field.id} className="mb-3">
-              <input {...form.register(`services.${index}.title`)} className="w-full p-2 border mb-2"/>
+                <input
+                  {...form.register("category")}
+                  placeholder="Categoría"
+                  className="p-3 border rounded-xl"
+                />
 
-              <ServiceItems control={form.control} register={form.register} serviceIndex={index}/>
+              </div>
             </div>
-          ))}
 
-          <button type="button" onClick={() => appendService({ title: "", items: [{ value: "" }] })}>
-            + Servicio
-          </button>
-        </div>
+            {/* SERVICIOS */}
+            <div className="bg-white border rounded-2xl p-6 shadow-sm">
+              <h3 className="text-blue-700 font-bold mb-4">
+                SERVICIOS INCLUIDOS
+              </h3>
 
-        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+              {serviceFields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="mb-5"
+                >
+
+                  <input
+                    {...form.register(`services.${index}.title`)}
+                    className="w-full p-3 border rounded-xl mb-3"
+                    placeholder="Título del servicio"
+                  />
+
+                  <ServiceItems
+                    control={form.control}
+                    register={form.register}
+                    serviceIndex={index}
+                  />
+
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() =>
+                  appendService({
+                    title: "",
+                    items: [{ value: "" }]
+                  })
+                }
+                className="text-blue-600 text-sm"
+              >
+                + Agregar servicio
+              </button>
+            </div>
+
+          </>
+        )}
+
+        {/* 🇩🇴 NACIONAL */}
+        {type === "nacional" && (
+          <div className="bg-white border rounded-2xl p-6 shadow-sm">
+
+            <h3 className="text-blue-700 font-bold mb-4">
+              RESERVA NACIONAL
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4">
+
+              <input
+                {...form.register("destination")}
+                placeholder="Hotel"
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                {...form.register("country")}
+                placeholder="Destino"
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                type="date"
+                {...form.register("checkIn")}
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                type="date"
+                {...form.register("checkOut")}
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                {...form.register("locator")}
+                placeholder="Localizador"
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                {...form.register("phone")}
+                placeholder="Teléfono"
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                {...form.register("plan")}
+                placeholder="Plan"
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                {...form.register("category")}
+                placeholder="Categoría"
+                className="p-3 border rounded-xl"
+              />
+
+            </div>
+
+          </div>
+        )}
+
+        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-sm">
           Crear Voucher
         </button>
 
@@ -214,7 +380,20 @@ export default function VoucherFormPage() {
 function formatFechas(checkIn?: string, checkOut?: string) {
   if (!checkIn || !checkOut) return "";
 
-  const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  const meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre"
+  ];
 
   const entrada = new Date(checkIn);
   const salida = new Date(checkOut);
@@ -222,25 +401,53 @@ function formatFechas(checkIn?: string, checkOut?: string) {
   return `Del ${entrada.getDate()} al ${salida.getDate()} de ${meses[entrada.getMonth()]} ${entrada.getFullYear()}`;
 }
 
-function ServiceItems({ control, register, serviceIndex }: any) {
-  const { fields, append, remove } = useFieldArray({
+function ServiceItems({
+  control,
+  register,
+  serviceIndex
+}: any) {
+
+  const {
+    fields,
+    append,
+    remove
+  } = useFieldArray({
     control,
     name: `services.${serviceIndex}.items`
   });
 
   return (
     <div>
+
       {fields.map((item, i) => (
-        <div key={item.id} className="flex gap-2 mb-2">
-          <input {...register(`services.${serviceIndex}.items.${i}.value`)} className="flex-1 p-2 border"/>
-          <button type="button" onClick={() => remove(i)}>
-            <Trash2 className="w-4 h-4 text-red-500"/>
+        <div
+          key={item.id}
+          className="flex gap-2 mb-2"
+        >
+
+          <input
+            {...register(`services.${serviceIndex}.items.${i}.value`)}
+            className="flex-1 p-2 border rounded-xl"
+          />
+
+          <button
+            type="button"
+            onClick={() => remove(i)}
+          >
+            <Trash2 className="w-4 h-4 text-red-500" />
           </button>
+
         </div>
       ))}
-      <button type="button" onClick={() => append({ value: "" })}>
+
+      <button
+        type="button"
+        onClick={() => append({ value: "" })}
+        className="text-blue-600 text-sm"
+      >
         + Item
       </button>
+
     </div>
   );
 }
