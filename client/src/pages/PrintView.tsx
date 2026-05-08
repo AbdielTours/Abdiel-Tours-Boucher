@@ -2,6 +2,7 @@ import { useRoute, Link } from "wouter";
 import { useVoucher } from "@/hooks/use-vouchers";
 import { Printer, ArrowLeft, Loader2 } from "lucide-react";
 import logoImage from "@assets/logo_2024_1772634687195.png";
+import selloImage from "@/assets/sello.png";
 
 export default function PrintView() {
   const [, params] = useRoute("/vouchers/:id");
@@ -171,7 +172,16 @@ export default function PrintView() {
             </div>
           ))}
         </div>
+{/* SELLO */}
+<div className="relative h-0">
 
+  <img
+    src={selloImage}
+    alt="Sello"
+    className="absolute opacity-10 w-80 rotate-[-15deg] left-1/2 -translate-x-1/2 top-0"
+  />
+
+</div>
         {/* FOOTER */}
         <div className="text-center mt-10 text-sm">
           <p className="text-red-600">
