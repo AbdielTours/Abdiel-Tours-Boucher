@@ -50,7 +50,80 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+const paquetesTuristicos: Record<string, any[]> = {
 
+  MEDELLIN: [
+
+    {
+      title: "1- TRASLADOS",
+      items: [
+        {
+          value: "Traslado aeropuerto hotel ida y vuelta"
+        }
+      ]
+    },
+
+    {
+      title: "2- CITY TOUR + COMUNA 13",
+      items: [
+        {
+          value: "Plaza Botero"
+        },
+        {
+          value: "Pueblito Paisa"
+        },
+        {
+          value: "Metro y Metrocable"
+        },
+        {
+          value: "Escaleras eléctricas Comuna 13"
+        }
+      ]
+    },
+
+    {
+      title: "3- ENCHIVA RUMBERA",
+      items: [
+        {
+          value: "Recorrido nocturno"
+        },
+        {
+          value: "Parque Lleras"
+        },
+        {
+          value: "Guía acompañante"
+        }
+      ]
+    }
+
+  ],
+
+  CARTAGENA: [
+
+    {
+      title: "1- TRASLADOS",
+      items: [
+        {
+          value: "Aeropuerto - Hotel ida y vuelta"
+        }
+      ]
+    },
+
+    {
+      title: "2- CITY TOUR",
+      items: [
+        {
+          value: "Centro histórico"
+        },
+        {
+          value: "Castillo San Felipe"
+        }
+      ]
+    }
+
+  ]
+
+};
 export default function VoucherFormPage() {
 
   const queryClient = useQueryClient();
@@ -251,11 +324,69 @@ services:
 
               <div className="grid grid-cols-2 gap-4">
 
-                <input
-                  {...form.register("destination")}
-                  placeholder="Destino"
-                  className="p-3 border rounded-xl"
-                />
+               <input
+  {...form.register("destination")}
+  placeholder="Destino"
+  className="p-3 border rounded-xl"
+  onChange={(e) => {
+
+    form.setValue(
+      "destination",
+      e.target.value
+    );
+
+    const destino =
+      e.target.value.toUpperCase();
+
+    if (
+      type !== "nacional" &&
+      paquetesTuristicos[destino]
+    ) {
+
+      form.setValue(
+        "services",
+        [
+
+          ...paquetesTuristicos[destino],
+
+          {
+            title: "POLÍTICAS Y CONDICIONES",
+            items: [
+
+              {
+                value:
+                  "Los traslados aeropuerto hotel, el cliente debe notificar al tour operador al momento de aterrizar en el aeropuerto en destino."
+              },
+
+              {
+                value:
+                  "El aviso tardío implica recogida con demora en el aeropuerto."
+              },
+
+              {
+                value:
+                  "Los servicios aquí ofrecidos son tours compartidos."
+              },
+
+              {
+                value:
+                  "Los niños menores de 3 años pagan solo seguro de viaje y tarifa de avión."
+              },
+
+              {
+                value:
+                  "Niños de 4 años en adelante pagan tarifa de adulto."
+              }
+
+            ]
+          }
+
+        ]
+      );
+    }
+
+  }}
+/>
 
                 <input
                   {...form.register("country")}

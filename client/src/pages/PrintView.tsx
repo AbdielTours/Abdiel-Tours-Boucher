@@ -148,7 +148,7 @@ export default function PrintView() {
           {voucher.services.map((s, i) => (
             <div key={i} className="mt-3">
               <p
-  className={`font-bold text-center text-lg ${
+  className={`font-bold text-center text-base ${
     s.title === "POLÍTICAS Y CONDICIONES"
       ? "text-red-600"
       : "text-blue-700"
@@ -158,7 +158,7 @@ export default function PrintView() {
 </p>
 
               <ul
-  className={`mt-2 space-y-2 text-sm ${
+  className={`mt-2 space-y-2 text-base ${
     s.title === "POLÍTICAS Y CONDICIONES"
       ? "list-decimal ml-8 text-gray-700"
       : "list-disc ml-6"
