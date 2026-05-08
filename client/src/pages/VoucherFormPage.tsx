@@ -89,7 +89,59 @@ export default function VoucherFormPage() {
 
       services: [
         {
+          services:
+  type !== "nacional"
+    ? [
+        {
           title: "1- TRASLADOS",
+          items: [{ value: "" }]
+        },
+
+        {
+          title: "POLÍTICAS Y CONDICIONES",
+          items: [
+
+            {
+              value:
+                "Los traslados aeropuerto hotel, el cliente debe notificar al tour operador al momento de aterrizar en el aeropuerto en destino."
+            },
+
+            {
+              value:
+                "El aviso tardío implica recogida con demora en el aeropuerto."
+            },
+
+            {
+              value:
+                "Los servicios aquí ofrecidos son tours compartidos."
+            },
+
+            {
+              value:
+                "Los niños menores de 3 años pagan solo seguro de viaje y tarifa de avión."
+            },
+
+            {
+              value:
+                "Niños de 4 años en adelante pagan tarifa de adulto."
+            },
+
+            {
+              value:
+                "En caso de no cancelar o modificar el día del tour con 24 horas de anticipación, se tomará el 50% del pago como no show."
+            },
+
+            {
+              value:
+                "Para la realización de los tours se debe llevar ropa y zapato cómodo."
+            }
+
+          ]
+        }
+      ]
+    : [
+        {
+          title: "1- HOTEL",
           items: [{ value: "" }]
         }
       ]
