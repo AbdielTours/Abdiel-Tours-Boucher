@@ -143,22 +143,23 @@ export default function VoucherFormPage() {
     resolver: zodResolver(formSchema),
 
     defaultValues: {
-      guestNames: [{ name: "" }],
 
-      destination: "",
-      country: "",
+  guestNames: [{ name: "" }],
 
-      guestCount: 1,
+  destination: "",
+  country: "",
 
-      stayDates: "",
+  guestCount: 1,
 
-      checkIn: "",
-      checkOut: "",
+  stayDates: "",
 
-      locator: "",
-      phone: "",
-      plan: "",
-      category: "",
+  checkIn: "",
+  checkOut: "",
+
+  locator: "",
+  phone: "",
+  plan: "",
+  category: "",
 
 services:
   type !== "nacional"
