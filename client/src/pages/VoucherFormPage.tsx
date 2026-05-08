@@ -307,63 +307,77 @@ export default function VoucherFormPage() {
 
         {/* 🇩🇴 NACIONAL */}
         {type === "nacional" && (
-          <div className="bg-white border rounded-2xl p-6 shadow-sm">
+{/* HUÉSPEDES */}
+<div className="mt-6">
+  <h3 className="text-blue-700 font-bold mb-3">
+    HUÉSPEDES
+  </h3>
 
-            <h3 className="text-blue-700 font-bold mb-4">
-              RESERVA NACIONAL
-            </h3>
+  {guestFields.map((field, i) => (
+    <div key={field.id} className="flex gap-2 mb-3">
 
-            <div className="grid grid-cols-2 gap-4">
+      <input
+        {...form.register(`guestNames.${i}.name`)}
+        placeholder={`Nombre ${i + 1}`}
+        className="flex-1 p-3 border rounded-xl"
+      />
 
-              <input
-                {...form.register("destination")}
-                placeholder="Hotel"
-                className="p-3 border rounded-xl"
-              />
+      <button
+        type="button"
+        onClick={() => removeGuest(i)}
+      >
+        <Trash2 className="w-4 h-4 text-red-500" />
+      </button>
 
-              <input
-                {...form.register("country")}
-                placeholder="Destino"
-                className="p-3 border rounded-xl"
-              />
+    </div>
+  ))}
 
-              <input
-                type="date"
-                {...form.register("checkIn")}
-                className="p-3 border rounded-xl"
-              />
+  <button
+    type="button"
+    onClick={() => addGuest({ name: "" })}
+    className="text-blue-600 text-sm"
+  >
+    + Agregar huésped
+  </button>
+</div>
 
-              <input
-                type="date"
-                {...form.register("checkOut")}
-                className="p-3 border rounded-xl"
-              />
+{/* SERVICIOS */}
+<div className="mt-8">
+  <h3 className="text-blue-700 font-bold mb-4">
+    SERVICIOS INCLUIDOS
+  </h3>
 
-              <input
-                {...form.register("locator")}
-                placeholder="Localizador"
-                className="p-3 border rounded-xl"
-              />
+  {serviceFields.map((field, index) => (
+    <div key={field.id} className="mb-5">
 
-              <input
-                {...form.register("phone")}
-                placeholder="Teléfono"
-                className="p-3 border rounded-xl"
-              />
+      <input
+        {...form.register(`services.${index}.title`)}
+        className="w-full p-3 border rounded-xl mb-3"
+        placeholder="Título del servicio"
+      />
 
-              <input
-                {...form.register("plan")}
-                placeholder="Plan"
-                className="p-3 border rounded-xl"
-              />
+      <ServiceItems
+        control={form.control}
+        register={form.register}
+        serviceIndex={index}
+      />
 
-              <input
-                {...form.register("category")}
-                placeholder="Categoría"
-                className="p-3 border rounded-xl"
-              />
+    </div>
+  ))}
 
-            </div>
+  <button
+    type="button"
+    onClick={() =>
+      appendService({
+        title: "",
+        items: [{ value: "" }]
+      })
+    }
+    className="text-blue-600 text-sm"
+  >
+    + Agregar servicio
+  </button>
+</div>
 
           </div>
         )}
