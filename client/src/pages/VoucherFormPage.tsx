@@ -87,9 +87,7 @@ export default function VoucherFormPage() {
       plan: "",
       category: "",
 
-      services: [
-        {
-          services:
+services:
   type !== "nacional"
     ? [
         {
