@@ -176,10 +176,10 @@ export default function PrintView() {
 <div className="relative h-0">
 
   <img
-    src={selloImage}
-    alt="Sello"
-    className="w-[420px] opacity-[0.08] rotate-[-15deg] -mt-40"
-  />
+  src={selloImage}
+  alt="Sello"
+  className="absolute opacity-10 w-56 -z-10 left-1/2 -translate-x-1/2 top-32"
+/>
 
 </div>
         {/* FOOTER */}
