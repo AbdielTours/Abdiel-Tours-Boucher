@@ -72,7 +72,7 @@ export default function PrintView() {
 
         {/* HEADER */}
         <div className="text-center">
-          <img src={logoImage} className="mx-auto h-24 mb-2" />
+          <img src={logoImage} className="h-20 mx-auto mb-6" />
 
           <p className="text-xs uppercase tracking-widest text-gray-500">
             Agencia de Viajes y Turismo
