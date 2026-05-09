@@ -1,11 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation, useRoute } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { useCreateVoucher } from "@/hooks/use-vouchers";
+import {
+  useCreateVoucher,
+  useVoucher
+} from "@/hooks/use-vouchers";
 import { PageHeader } from "@/components/PageHeader";
 import { useToast } from "@/hooks/use-toast";
 
@@ -126,6 +129,17 @@ const paquetesTuristicos: Record<string, any[]> = {
 };
 export default function VoucherFormPage() {
 
+const [, setLocation] = useLocation();
+
+const [match, params] = useRoute("/vouchers/:id/edit");
+
+const voucherId = params?.id
+  ? parseInt(params.id)
+  : null;
+
+const { data: voucher } =
+  useVoucher(voucherId);
+
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
@@ -144,80 +158,57 @@ export default function VoucherFormPage() {
 
     defaultValues: {
 
-  guestNames: [{ name: "" }],
+  guestNames: voucher?.guestName
+    ? voucher.guestName
+        .split(",")
+        .map((n: string) => ({
+          name: n.trim()
+        }))
+    : [{ name: "" }],
 
-  destination: "",
-  country: "",
+  destination: voucher?.destination || "",
 
-  guestCount: 1,
+  country: voucher?.country || "",
 
-  stayDates: "",
+  guestCount: voucher?.guestCount || 1,
+
+  stayDates: voucher?.stayDates || "",
 
   checkIn: "",
+
   checkOut: "",
 
-  locator: "",
-  phone: "",
-  plan: "",
-  category: "",
+  locator: voucher?.locator || "",
 
-services:
-  type !== "nacional"
-    ? [
-        {
-          title: "1- TRASLADOS",
-          items: [{ value: "" }]
-        },
+  phone: voucher?.phone || "",
 
-        {
-          title: "POLÍTICAS Y CONDICIONES",
-          items: [
+  plan: voucher?.plan || "",
 
-            {
-              value:
-                "Los traslados aeropuerto hotel, el cliente debe notificar al tour operador al momento de aterrizar en el aeropuerto en destino."
-            },
+  category: voucher?.category || "",
 
-            {
-              value:
-                "El aviso tardío implica recogida con demora en el aeropuerto."
-            },
-
-            {
-              value:
-                "Los servicios aquí ofrecidos son tours compartidos."
-            },
-
-            {
-              value:
-                "Los niños menores de 3 años pagan solo seguro de viaje y tarifa de avión."
-            },
-
-            {
-              value:
-                "Niños de 4 años en adelante pagan tarifa de adulto."
-            },
-
-            {
-              value:
-                "En caso de no cancelar o modificar el día del tour con 24 horas de anticipación, se tomará el 50% del pago como no show."
-            },
-
-            {
-              value:
-                "Para la realización de los tours se debe llevar ropa y zapato cómodo."
-            }
-
-          ]
-        }
-      ]
-    : [
-        {
-          title: "1- HOTEL",
-          items: [{ value: "" }]
-        }
-      ]
-    }
+  services: voucher?.services
+    ? voucher.services.map((s: any) => ({
+        title: s.title,
+        items: s.items.map((i: string) => ({
+          value: i
+        }))
+      }))
+    : (
+        type !== "nacional"
+          ? [
+              {
+                title: "1- TRASLADOS",
+                items: [{ value: "" }]
+              }
+            ]
+          : [
+              {
+                title: "1- HOTEL",
+                items: [{ value: "" }]
+              }
+            ]
+      )
+}
   });
 
   const {
