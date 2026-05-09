@@ -122,7 +122,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
-                      onClick={() => setLocation(`/vouchers/${voucher.id}/edit`)}
+                      onClick={() => setLocation(`/vouchers/${voucher.id}/edit?type=${voucher.type}`)}
                       className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                       title="Editar"
                     >
