@@ -173,7 +173,8 @@ const paquetesTuristicos: Record<string, any[]> = {
       value: "Guía acompañante durante todo el recorrido."
     }
 
-  ]
+  ],
+
 }
 
   CARTAGENA: [
