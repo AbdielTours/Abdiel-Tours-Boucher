@@ -101,7 +101,7 @@ const paquetesTuristicos: Record<string, any[]> = {
 
   ],
 
-   {
+
   CARTAGENA: [
 
     {
