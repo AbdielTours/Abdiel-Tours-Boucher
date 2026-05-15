@@ -114,7 +114,6 @@ const paquetesTuristicos: Record<string, any[]> = {
     }
 
   ]
-    },
 
     {
       title: "3- ENCHIVA RUMBERA",
@@ -208,7 +207,7 @@ const paquetesTuristicos: Record<string, any[]> = {
       value: "Guía acompañante durante todo el recorrido."
     }
 
-  ]
+  ],
 
 };
 export default function VoucherFormPage() {
