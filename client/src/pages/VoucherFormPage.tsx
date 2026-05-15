@@ -58,30 +58,62 @@ const paquetesTuristicos: Record<string, any[]> = {
   MEDELLIN: [
 
     {
-      title: "1- TRASLADOS",
-      items: [
-        {
-          value: "Traslado aeropuerto hotel ida y vuelta"
-        }
-      ]
+  title: "5- CITY TOUR + GRAFFITOUR POR MEDELLÍN + COMUNA 13",
+  items: [
+
+    {
+      value: "Transporte en vehículo de servicios especiales, según número de pasajeros."
     },
 
     {
-      title: "2- CITY TOUR + COMUNA 13",
-      items: [
-        {
-          value: "Plaza Botero"
-        },
-        {
-          value: "Pueblito Paisa"
-        },
-        {
-          value: "Metro y Metrocable"
-        },
-        {
-          value: "Escaleras eléctricas Comuna 13"
-        }
-      ]
+      value: "Almuerzo típico."
+    },
+
+    {
+      value: "Visita y parada en Pueblito Paisa (réplica de un pueblo tradicional antioqueño)."
+    },
+
+    {
+      value: "Parque de los Pies Descalzos."
+    },
+
+    {
+      value: "Parques del Río."
+    },
+
+    {
+      value: "Plaza Botero."
+    },
+
+    {
+      value: "Ingreso al Metro y Metrocable."
+    },
+
+    {
+      value: "Visita y recorrido a los grafitis al aire libre."
+    },
+
+    {
+      value: "Comuna 13 con guía local."
+    },
+
+    {
+      value: "Visita y recorrido por las escaleras eléctricas de la Comuna 13."
+    },
+
+    {
+      value: "Guía acompañante durante todo el recorrido."
+    },
+
+    {
+      value: "Tarjeta de asistencia médica."
+    },
+
+    {
+      value: "Tour en español."
+    }
+
+  ]
     },
 
     {
